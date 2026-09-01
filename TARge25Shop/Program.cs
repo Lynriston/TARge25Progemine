@@ -4,6 +4,8 @@ namespace TARge25Shop
     {
         public static void Main(string[] args)
         {
+            Game currentGame = new Game();
+            currentGame.Start();
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
