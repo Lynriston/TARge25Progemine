@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TARge25Shop.Core.Domain;
 
 
 namespace TARge25Shop.Data
@@ -9,5 +10,8 @@ namespace TARge25Shop.Data
         // Tegime konteksti, mis p'rib DbContext klassi.
         public TARge25ShopContext(DbContextOptions<TARge25ShopContext> options) : base(options) { }
 
+
+        //Lisada DbSet, mis seotub meie domain klassiga Spaceship.
+        public DbSet<Spaceship> Spaceships { get; set; }
     }
 }

@@ -15,4 +15,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TARge25Shop.Core\TARge25Shop.Core.csproj" />
+  </ItemGroup>
+
 </Project>

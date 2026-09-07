@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TARge25Shop.Core\TARge25Shop.Core.csproj" />
+    <ProjectReference Include="..\TARge25Shop.Data\TARge25Shop.Data.csproj" />
   </ItemGroup>
 
 </Project>
