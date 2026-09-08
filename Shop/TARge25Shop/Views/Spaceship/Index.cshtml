@@ -4,3 +4,34 @@
 <div>
     <a asp-action="Create" asp-controller="spaceship" type="submit" class="btn btn-primary">Create</a>
 </div>
+
+<div>
+    Spaceships
+</div>
+<form method="get">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td scope="col">Nr</td>
+                <td scope="col">Name</td>
+                <td scope="col">Type</td>
+                <td scope="col">Build Date</td>
+                <td scope="col">Crew</td>
+                <td scope="col"></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @foreach (var spaceship in Model)
+                    {
+                        <td scope="col">@spaceship.Id</td>
+                        <td scope="col">@spaceship.Name</td>
+                        <td scope="col">@spaceship.ShipType</td>
+                        <td scope="col">@spaceship.CreatedAt</td>
+                        <td scope="col">@spaceship.Crew</td>
+                    }
+
+            </tr>
+        </tbody>
+    </table>
+</form>
