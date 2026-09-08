@@ -15,4 +15,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TARge25Shop.ApplicationServices\TARge25Shop.ApplicationServices.csproj" />
+    <ProjectReference Include="..\TARge25Shop.Core\TARge25Shop.Core.csproj" />
+  </ItemGroup>
+
 </Project>
