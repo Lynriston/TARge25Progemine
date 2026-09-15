@@ -76,5 +76,12 @@ namespace TARge25Shop.ApplicationServices.Services
 
             return result;
         }
+        public async Task<Spaceship> Details(Guid id)
+        {
+            var result = await _context.Spaceships
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return result;
+        }
     }
 }
