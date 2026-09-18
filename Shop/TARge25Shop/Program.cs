@@ -21,6 +21,7 @@ namespace TARge25Shop
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<ISpaceshipServices, SpaceshipServices>();
+            builder.Services.AddScoped<IKindergardenServices, KindergardenServices>();
 
             var app = builder.Build();
 
