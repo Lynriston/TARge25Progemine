@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TARge25Shop.Core.Dto
+﻿namespace TARge25Shop.Models.Kindergarden
 {
-    public class KindergardenDto
+    public class KindergardenIndexViewModel
     {
         public Guid? Id { get; set; }
         public string GroupName { get; set; } = string.Empty;

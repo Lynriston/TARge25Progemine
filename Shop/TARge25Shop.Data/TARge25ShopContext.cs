@@ -13,5 +13,6 @@ namespace TARge25Shop.Data
 
         //Lisada DbSet, mis seotub meie domain klassiga Spaceship.
         public DbSet<Spaceship> Spaceships { get; set; }
+        public DbSet<Kindergarden> Kindergardens { get; set; }
     }
 }
