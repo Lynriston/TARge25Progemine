@@ -4,6 +4,7 @@ using TARge25Shop.Core.Dto;
 using TARge25Shop.Core.ServiceInterface;
 using TARge25Shop.Data;
 using TARge25Shop.Models.Kindergarden;
+using TARge25Shop.Models.Spaceship;
 
 namespace TARge25Shop.Controllers
 {
@@ -47,7 +48,9 @@ namespace TARge25Shop.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            KindergardenCreateUpdateViewModel result = new();
+
+            return View("CreateUpdate", result);
         }
 
         [HttpPost]
