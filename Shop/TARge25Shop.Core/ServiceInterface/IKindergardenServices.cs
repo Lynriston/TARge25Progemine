@@ -6,5 +6,10 @@ namespace TARge25Shop.Core.ServiceInterface
     public interface IKindergardenServices
     {
         Task<Kindergarden> Create(KindergardenDto dto);
+        Task<Kindergarden> Update(SpaceshipDto dto);
+        Task<Kindergarden> DetailAsync(Guid id);
+        Task<Kindergarden> Delete(Guid id);
+        Task<Kindergarden> Details(Guid id);
+
     }
 }
