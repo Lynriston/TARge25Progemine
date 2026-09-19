@@ -5,7 +5,6 @@ using TARge25Shop.Core.ServiceInterface;
 using TARge25Shop.Data;
 using TARge25Shop.Data.Migrations;
 using TARge25Shop.Models.Kindergarden;
-using TARge25Shop.Models.Spaceship;
 
 namespace TARge25Shop.Controllers
 {
@@ -69,6 +68,49 @@ namespace TARge25Shop.Controllers
 
             if (result == null)
             {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var kindergarden = await _kindergardenServices.DetailAsync(id);
+
+            if (kindergarden == null)
+            {
+                return NotFound();
+            }
+
+            var vm = new KindergardenCreateUpdateViewModel
+            {
+                Id = kindergarden.Id,
+                GroupName = kindergarden.GroupName,
+                ChildrenCount = kindergarden.ChildrenCount,
+                KindergardenName = kindergarden.KindergardenName,
+                TeacherName = kindergarden.TeacherName,
+            };
+            return View("CreateUpdate", vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Update(KindergardenCreateUpdateViewModel vm)
+        {
+            var dto = new KindergardenDto()
+            {
+                Id = vm.Id,
+                GroupName = vm.GroupName,
+                ChildrenCount = vm.ChildrenCount,
+                KindergardenName = vm.KindergardenName,
+                TeacherName = vm.TeacherName,
+                CreatedAt = vm.CreatedAt,
+                UpdatedAt = vm.UpdatedAt
+            };
+            var result = await _kindergardenServices.Update(dto);
+
+            if (result == null)
+            {
+                // Handle the case when the creation fails
                 return RedirectToAction(nameof(Index));
             }
 
