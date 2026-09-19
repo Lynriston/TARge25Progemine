@@ -3,6 +3,7 @@ using TARge25Shop.ApplicationServices.Services;
 using TARge25Shop.Core.Dto;
 using TARge25Shop.Core.ServiceInterface;
 using TARge25Shop.Data;
+using TARge25Shop.Data.Migrations;
 using TARge25Shop.Models.Kindergarden;
 using TARge25Shop.Models.Spaceship;
 
@@ -71,6 +72,40 @@ namespace TARge25Shop.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var kindergarden = await _kindergardenServices.DetailAsync(id);
+
+            if (kindergarden == null)
+            {
+                return NotFound();
+            }
+
+            var vm = new KindergardenDeleteViewModel
+            {
+                Id = kindergarden.Id,
+                GroupName = kindergarden.GroupName,
+                ChildrenCount = kindergarden.ChildrenCount,
+                KindergardenName = kindergarden.KindergardenName,
+                TeacherName = kindergarden.TeacherName,
+                CreatedAt = kindergarden.CreatedAt,
+                UpdatedAt = kindergarden.UpdatedAt
+            };
+            return View(vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmation(Guid id)
+        {
+            var kindergarden = await _kindergardenServices.Delete(id);
+
+            if (kindergarden == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             return RedirectToAction(nameof(Index));
         }
     }
