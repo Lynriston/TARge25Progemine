@@ -5,6 +5,7 @@ using TARge25Shop.Core.ServiceInterface;
 using TARge25Shop.Data;
 using TARge25Shop.Data.Migrations;
 using TARge25Shop.Models.Kindergarden;
+using TARge25Shop.Models.Spaceship;
 
 namespace TARge25Shop.Controllers
 {
@@ -149,6 +150,29 @@ namespace TARge25Shop.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        //Teha Detaili vaate meetod
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var kindergarden = await _kindergardenServices.Details(id);
+            if (kindergarden == null)
+            {
+                return NotFound();
+            }
+
+            // Tuleb teha vaheinstants dbo ja vm vahel
+            var vm = new KindergardenDetailsViewModel
+            {
+                Id = kindergarden.Id,
+                GroupName = kindergarden.GroupName,
+                ChildrenCount = kindergarden.ChildrenCount,
+                KindergardenName = kindergarden.KindergardenName,
+                TeacherName = kindergarden.TeacherName,
+                CreatedAt = kindergarden.CreatedAt,
+                UpdatedAt = kindergarden.UpdatedAt
+            };
+            return View(vm);
         }
     }
 }
