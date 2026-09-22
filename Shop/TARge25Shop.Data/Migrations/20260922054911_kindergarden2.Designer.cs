@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TARge25Shop.Data;
 
@@ -11,9 +12,11 @@ using TARge25Shop.Data;
 namespace TARge25Shop.Data.Migrations
 {
     [DbContext(typeof(TARge25ShopContext))]
-    partial class TARge25ShopContextModelSnapshot : ModelSnapshot
+    [Migration("20260922054911_kindergarden2")]
+    partial class kindergarden2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,21 +25,36 @@ namespace TARge25Shop.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TARge25Shop.Core.Domain.FileToApi", b =>
+            modelBuilder.Entity("TARge25Shop.Core.Domain.Kindergarden", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ExistingFilePath")
+                    b.Property<int>("ChildrenCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GroupName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SpaceshipId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("KindergardenName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TeacherName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("FileToApis");
+                    b.ToTable("Kindergardens");
                 });
 
             modelBuilder.Entity("TARge25Shop.Core.Domain.Spaceship", b =>
