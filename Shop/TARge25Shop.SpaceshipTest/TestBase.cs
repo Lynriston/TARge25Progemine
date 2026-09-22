@@ -23,6 +23,14 @@ namespace TARge25Shop.SpaceshipTest
             var services = new ServiceCollection();
             SetupServices(services);
         }
+        /// <summary>
+        /// Seame üles testide löbiviimiseks vajalikud teenused mujalt projektist
+        /// See meetod annab ka mölusoleva andmebaasi mida testideks kasutada,
+        /// toimib kui "program.cs"-i sisu testide jooksutamiseks, ent lühidal kujul.
+        /// </summary>
+        /// <param name="services">tühi ServiceCollection-tüübi muutuja kuhu asetame
+        /// teenused, sh ka andmebaasi</param>
+
 
         public virtual void SetupServices(ServiceCollection services)
         {
