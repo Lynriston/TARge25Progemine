@@ -64,7 +64,7 @@ namespace TARge25Shop.ApplicationServices.Services
             }
         }
 
-        public async Task<FileToApi?> RemoneImageFromApi(FileToApiDto dto)
+        public async Task<FileToApi?> RemoveImageFromApi(FileToApiDto dto)
         {
             //kui soovin kustutada faili, siis pean l'bi id pildi otsida
             var imageId = await _context.FileToApis
@@ -81,6 +81,32 @@ namespace TARge25Shop.ApplicationServices.Services
             _context.FileToApis.Remove(imageId);
             
             await _context.SaveChangesAsync();
+            
+            return null;
+        }
+
+        //<List<FileToApi> lisati sellep'rast, et faile on mitu, mida kutsutakse
+        public async Task<FileToApi?> RemoveImagesFromApi(FileToApiDto[] dtos)
+        {
+
+            foreach (var dto in dtos)
+            {
+                //kui soovin kustutada faili, siis pean l'bi id pildi otsida
+                var imageId = await _context.FileToApis
+                    .FirstOrDefaultAsync(x => x.Id == dto.Id);
+
+                //Teha muutuja filePath, mis n'itab failide asukohta
+                var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\" + imageId.ExistingFilePath;
+
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+
+                _context.FileToApis.Remove(imageId);
+
+                await _context.SaveChangesAsync();
+            }
             
             return null;
         }

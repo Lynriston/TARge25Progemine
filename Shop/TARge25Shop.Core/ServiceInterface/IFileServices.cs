@@ -7,6 +7,7 @@ namespace TARge25Shop.Core.ServiceInterface
     {
 
         public void FilesToApi(SpaceshipDto dto, Spaceship domain);
-        Task<FileToApi?> RemoneImageFromApi(FileToApiDto dto);
+        Task<FileToApi?> RemoveImageFromApi(FileToApiDto dto);
+        Task<FileToApi?> RemoveImagesFromApi(FileToApiDto[] dtos);
     }
 }

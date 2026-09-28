@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TARge25Shop.ApplicationServices.Services;
-using TARge25Shop.Core.Domain;
 using TARge25Shop.Core.Dto;
 using TARge25Shop.Core.ServiceInterface;
 using TARge25Shop.Data;
 using TARge25Shop.Models.Spaceship;
-using static System.Net.Mime.MediaTypeNames;
+
 
 namespace TARge25Shop.Controllers
 {
@@ -242,7 +240,7 @@ namespace TARge25Shop.Controllers
                 Id = vm.ImageId
             };
 
-            var image = await _fileServices.RemoneImageFromApi(dto);
+            var image = await _fileServices.RemoveImageFromApi(dto);
 
             if (image == null)
             {
