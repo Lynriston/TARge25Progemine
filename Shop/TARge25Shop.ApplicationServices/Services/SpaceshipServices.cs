@@ -56,6 +56,8 @@ namespace TARge25Shop.ApplicationServices.Services
             spaceShip.EnginePower = dto.EnginePower;
             spaceShip.CreatedAt = DateTime.Now;
             spaceShip.UpdatedAt = DateTime.Now;
+            //Lisame juurde piltide lisamine
+            _fileServices.FilesToApi(dto, spaceShip);
 
 
             //andmete salvestamine andmebaasi
