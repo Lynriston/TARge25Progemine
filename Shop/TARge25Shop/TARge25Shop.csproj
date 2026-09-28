@@ -20,4 +20,8 @@
     <ProjectReference Include="..\TARge25Shop.Core\TARge25Shop.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\multipleFileUpload\" />
+  </ItemGroup>
+
 </Project>
