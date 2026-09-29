@@ -10,12 +10,10 @@ namespace TARge25Shop.ApplicationServices.Services
     public class RealestateServices : IRealestateServices
     {
         private readonly TARge25ShopContext _context;
-        private readonly IFileServices _fileServices;
 
-        public RealestateServices(TARge25ShopContext context, IFileServices fileServices)
+        public RealestateServices(TARge25ShopContext context)
         {
             _context = context;
-            _fileServices = fileServices;
         }
 
         public async Task<RealEstate> Create(RealestateDto dto)
@@ -29,7 +27,6 @@ namespace TARge25Shop.ApplicationServices.Services
             realEstate.BuildingType = dto.BuildingType;
             realEstate.CreatedAt = DateTime.Now;
             realEstate.ModifiedAt = DateTime.Now;
-            _fileServices.FilesToApi(dto, realEstate);
 
             _context.RealEstate.Add(realEstate);
             await _context.SaveChangesAsync();
@@ -48,7 +45,6 @@ namespace TARge25Shop.ApplicationServices.Services
             realEstate.BuildingType = dto.BuildingType;
             realEstate.CreatedAt = DateTime.Now;
             realEstate.ModifiedAt = DateTime.Now;
-            _fileServices.FilesToApi(dto, realEstate);
 
             _context.RealEstate.Update(realEstate);
             await _context.SaveChangesAsync();
@@ -68,18 +64,6 @@ namespace TARge25Shop.ApplicationServices.Services
         {
             var result = await _context.RealEstate
                 .FirstOrDefaultAsync(x => x.Id == id);
-
-            //var images muutuja alt otsib ülesse pildid
-            var images = await _context.FileToApis
-                .Where(x => x.RealEstateId == id)
-                .Select(y => new FileToApiDto
-                {
-                    Id = y.Id,
-                    ExistingFilePath = y.ExistingFilePath,
-                    RealEstateId = y.RealEstateId
-                }).ToArrayAsync();
-            //ja kutsub välja removeImagesFromApi
-            await _fileServices.RemoveImagesFromApi(images);
 
             _context.RealEstate.Remove(result);
             await _context.SaveChangesAsync();
