@@ -77,6 +77,24 @@ namespace TARge25Shop.SpaceshipTest
             Assert.Equal(addSpaceship.Id, deleteSpaceship.Id);
         }
 
+        [Fact]
+        public async Task ShouldNot_DeleteSpaceshipById_WhenDidNotDeleteSpaceship()
+        {
+            //Ülesseade
+            var dto = MockSpaceshipData();
+
+            //Tegevus
+            var spaceShip1 = await Svc<ISpaceshipServices>().Create(dto);
+            var spaceShip2 = await Svc<ISpaceshipServices>().Create(dto);
+
+            var result = await Svc<ISpaceshipServices>().Delete((Guid)spaceShip2.Id);
+
+            //Kontroll
+            Assert.NotEqual(spaceShip1.Id, result.Id)
+        }
+
+        /* ]leval testid all abimeetodid */
+
         private SpaceshipDto MockSpaceshipData(bool isOneOrTwo = false)
         {
             if (isOneOrTwo == false)
