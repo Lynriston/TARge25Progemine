@@ -168,6 +168,47 @@ namespace TARge25Shop.SpaceshipTest
             Assert.True(result.EnginePower > 0);
         }
 
+        //Test mis kontrollib, et meeskond on suurem kui 3 liiget, service ei tohi lisada sellest vähema arvuga objecti, service võib selle probleemi lahendada ükskõik kuidas
+
+        [Fact]
+        private async Task ShouldNot_CreateSpaceship_WithEqualOrLessThanThreeCrewMembers()
+        {
+            SpaceshipDto dto = MockSpaceshipData();
+            dto.Crew = 0;
+
+            var result = await Svc<ISpaceshipServices>().Create(dto);
+
+            Assert.True(result.Crew > 3);
+        }
+
+        [Fact]
+        public async Task Should_RemoveSpaceshipFromDB_WhenSpaceshipDeleted()
+        {
+            //[lesseade
+            SpaceshipDto dto = MockSpaceshipData();
+
+            var createdSpaceship = await Svc<ISpaceshipServices>().Create(dto);
+            var deletedSpaceship = await Svc<ISpaceshipServices>().Delete((Guid)createdSpaceship.Id);
+            var result = await Svc<ISpaceshipServices>().DetailAsync((Guid)createdSpaceship.Id);
+
+            Assert.Equal(createdSpaceship.Id, deletedSpaceship.Id);
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task ShouldNot_RemoveSpaceshipFromDB_WhenSpaceshipIdIsDifferent()
+        {
+            SpaceshipDto dto = MockSpaceshipData();
+
+            var createdSpaceship1 = await Svc<ISpaceshipServices>().Create(dto);
+            var createdSpaceship2 = await Svc<ISpaceshipServices>().Create(dto);
+            var deletedSpaceship = await Svc<ISpaceshipServices>().Delete((Guid)createdSpaceship2.Id);
+            var result = await Svc<ISpaceshipServices>().DetailAsync((Guid)createdSpaceship2.Id);
+
+            Assert.NotEqual(createdSpaceship1.Id, deletedSpaceship.Id);
+            Assert.Null(result);
+        }
+
         /* ]leval testid all abimeetodid */
 
         private SpaceshipDto MockSpaceshipData(bool isOneOrTwo = false)

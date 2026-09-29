@@ -35,7 +35,17 @@ namespace TARge25Shop.ApplicationServices.Services
             //kui uus ankeet on loodud, siis
             //toimub ka faili salvestamine
             //saab kutsuda teise service classi meetotit
+
+            if (spaceShip.Crew < 4)
+            {
+                spaceShip.Crew = 4;
+            }
+
             _fileServices.FilesToApi(dto, spaceShip);
+            if (spaceShip.EnginePower < 0)
+            {
+                spaceShip.Crew = 4;
+            }
 
             //andmete salvestamine andmebaasi
             _context.Spaceships.Add(spaceShip);
