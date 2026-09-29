@@ -205,7 +205,7 @@ namespace TARge25Shop.SpaceshipTest
             var deletedSpaceship = await Svc<ISpaceshipServices>().Delete((Guid)createdSpaceship2.Id);
             var result = await Svc<ISpaceshipServices>().DetailAsync((Guid)createdSpaceship2.Id);
 
-            Assert.NotEqual(createdSpaceship1.Id, deletedSpaceship.Id);
+            Assert.NotEqual(createdSpaceship1, deletedSpaceship);
             Assert.Null(result);
         }
 
