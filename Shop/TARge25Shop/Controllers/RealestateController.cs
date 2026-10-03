@@ -167,6 +167,5 @@ namespace TARge25Shop.Controllers
 
             return View(vm);
         }
-
     }
 }

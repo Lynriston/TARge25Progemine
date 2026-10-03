@@ -38,7 +38,7 @@ namespace TARge25Shop.ApplicationServices.Services
         {
             RealEstate realEstate = new();
 
-            realEstate.Id = Guid.NewGuid();
+            realEstate.Id = dto.Id;
             realEstate.Area = dto.Area;
             realEstate.Location = dto.Location;
             realEstate.RoomNumber = dto.RoomNumber;
@@ -54,10 +54,10 @@ namespace TARge25Shop.ApplicationServices.Services
 
         public async Task<RealEstate> DetailAsync(Guid id)
         {
-            var realestate = await _context.RealEstate
+            var realEstate = await _context.RealEstate
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            return realestate;
+            return realEstate;
         }
 
         public async Task<RealEstate> Delete(Guid id)
