@@ -9,6 +9,8 @@ namespace TARge25Shop.Core.Dto
         public string? Location { get; set; } = string.Empty;
         public int RoomNumber { get; set; }
         public string? BuildingType { get; set; } = string.Empty;
+        public List<IFormFile>? Files { get; set; } 
+        public IEnumerable<FileToDatabaseDto> Image { get; set; } = new List<FileToDatabaseDto>();
         public DateTime? CreatedAt { get; set; } 
         public DateTime? ModifiedAt { get; set; }
     }

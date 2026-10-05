@@ -47,6 +47,7 @@ namespace TARge25Shop.Controllers
             return View("CreateUpdate", result);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Create(RealestateCreateUpdateViewModel vm)
         {
             var dto = new RealestateDto
@@ -55,8 +56,15 @@ namespace TARge25Shop.Controllers
                 Location = vm.Location,
                 RoomNumber = vm.RoomNumber,
                 BuildingType = vm.BuildingType,
-                CreatedAt = DateTime.Now,
-                ModifiedAt = DateTime.Now,
+                Files = vm.Files,
+                Image = vm.Image
+                    .Select( x => new FileToDatabaseDto
+                    {
+                        Id = x.ImageId,
+                        ImageData = x.ImageData,
+                        ImageTitle = x.ImageTitle,
+                        RealEstateId = x.RealEstateId
+                    }).ToArray()
             };
 
             var result = await _realestateServices.Create(dto);
