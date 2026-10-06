@@ -43,9 +43,11 @@
     </div>
 
     <div>
-        @foreach (var image in Model.Image)
+        @foreach (var image in Model.Images)
         {
             <partial name="_Images" model="image" />
+            <input asp-action="removeImage" asp-controller="realEstate" asp-route-imageId="@image.ImageId"
+                   type="submit" class="btn btn-danger" value="Remove Image" />
         }
     </div>
 

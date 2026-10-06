@@ -53,6 +53,11 @@ namespace TARge25Shop.ApplicationServices.Services
             realEstate.CreatedAt = DateTime.Now;
             realEstate.ModifiedAt = DateTime.Now;
 
+            if (dto.Files != null)
+            {
+                _fileServices.UploadFilesToDatabase(dto, realEstate);
+            }
+
             _context.RealEstate.Update(realEstate);
             await _context.SaveChangesAsync();
 
@@ -69,20 +74,29 @@ namespace TARge25Shop.ApplicationServices.Services
 
         public async Task<RealEstate> Delete(Guid id)
         {
-            var result = await _context.RealEstate
+            var realestate = await _context.RealEstate
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            _context.RealEstate.Remove(result);
+            var images = await _context.FileToDatabases
+                .Where(x => x.RealEstateId == id)
+                .Select(y => new FileToDatabaseDto
+                {
+                    Id = y.Id,
+                }).ToArrayAsync();
+
+            await _fileServices.RemoveImagesFromDatabase(images);
+
+            _context.RealEstate.Remove(realestate);
             await _context.SaveChangesAsync();
 
-            return result;
+            return realestate;
         }
         public async Task<RealEstate> Details(Guid id)
         {
-            var result = await _context.RealEstate
+            var realestate = await _context.RealEstate
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            return result;
+            return realestate;
         }
     }
 }

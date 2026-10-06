@@ -57,5 +57,12 @@
         <partial name="_Images" model="images" />
     }
 
+    <dl>
+        @foreach (var images in Model.Images)
+        {
+            <partial name="_Images" model="images" />
+        }
+    </dl>
+
     <a asp-action="Index" asp-controller="spaceship" class="btn btn-success">Back to List</a>
 </div>

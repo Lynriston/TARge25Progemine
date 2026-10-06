@@ -10,7 +10,7 @@ namespace TARge25Shop.Models.RealEstate
         public int RoomNumber { get; set; }
         public string? BuildingType { get; set; }
         public List<IFormFile>? Files { get; set; }
-        public IEnumerable<RealestateImageViewModel> Image { get; set; } = new List<RealestateImageViewModel>();
+        public List<RealestateImageViewModel> Images { get; set; } = new List<RealestateImageViewModel>();
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
         
