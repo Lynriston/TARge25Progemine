@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace TARge25Shop.Core.Dto
 {
@@ -11,6 +12,8 @@ namespace TARge25Shop.Core.Dto
         public int ChildrenCount { get; set; }
         public string KindergardenName { get; set; } = string.Empty;
         public string TeacherName { get; set; } = string.Empty;
+        public List<IFormFile>? Files { get; set; }
+        public IEnumerable<FileToDatabaseDto> Image { get; set; } = new List<FileToDatabaseDto>();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

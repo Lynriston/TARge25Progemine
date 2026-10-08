@@ -22,6 +22,7 @@ namespace TARge25Shop
 
             builder.Services.AddScoped<ISpaceshipServices, SpaceshipServices>();
             builder.Services.AddScoped<IKindergardenServices, KindergardenServices>();
+            builder.Services.AddScoped<IFileServices, FileServices>();
 
             var app = builder.Build();
 

@@ -6,6 +6,7 @@ using TARge25Shop.Data;
 using TARge25Shop.Data.Migrations;
 using TARge25Shop.Models.Kindergarden;
 using TARge25Shop.Models.Spaceship;
+using Microsoft.EntityFrameworkCore;
 
 namespace TARge25Shop.Controllers
 {
@@ -14,15 +15,18 @@ namespace TARge25Shop.Controllers
 
         private readonly IKindergardenServices _kindergardenServices;
         private readonly TARge25ShopContext _context;
+        private readonly IFileServices _fileServices;
 
         public KindergardenController
             (
             IKindergardenServices kindergardenServices,
-            TARge25ShopContext context
+            TARge25ShopContext context,
+            IFileServices fileServices
             )
         {
             _kindergardenServices = kindergardenServices;
             _context = context;
+            _fileServices = fileServices;
         }
 
         public async Task<IActionResult> Index()
@@ -62,7 +66,16 @@ namespace TARge25Shop.Controllers
                 GroupName = vm.GroupName,
                 ChildrenCount = vm.ChildrenCount,
                 KindergardenName = vm.KindergardenName,
-                TeacherName = vm.TeacherName
+                TeacherName = vm.TeacherName,
+                Files = vm.Files,
+                Image = vm.Image
+                    .Select(x => new FileToDatabaseDto
+                    {
+                        Id = x.ImageId,
+                        ImageData = x.ImageData,
+                        ImageTitle = x.ImageTitle,
+                        KindergardenId = x.KindergardenId
+                    })
             };
 
             var result = await _kindergardenServices.Create(dto);
@@ -84,14 +97,17 @@ namespace TARge25Shop.Controllers
                 return NotFound();
             }
 
-            var vm = new KindergardenCreateUpdateViewModel
-            {
-                Id = kindergarden.Id,
-                GroupName = kindergarden.GroupName,
-                ChildrenCount = kindergarden.ChildrenCount,
-                KindergardenName = kindergarden.KindergardenName,
-                TeacherName = kindergarden.TeacherName,
-            };
+            KindergardenImageViewModel[] images = await FileFromDatabase(id);
+
+            var vm = new KindergardenCreateUpdateViewModel();
+
+            vm.Id = kindergarden.Id;
+            vm.GroupName = kindergarden.GroupName;
+            vm.ChildrenCount = kindergarden.ChildrenCount;
+            vm.KindergardenName = kindergarden.KindergardenName;
+            vm.TeacherName = kindergarden.TeacherName;
+            vm.Image.AddRange(images);
+
             return View("CreateUpdate", vm);
         }
         [HttpPost]
@@ -105,9 +121,20 @@ namespace TARge25Shop.Controllers
                 KindergardenName = vm.KindergardenName,
                 TeacherName = vm.TeacherName,
                 CreatedAt = vm.CreatedAt,
-                UpdatedAt = vm.UpdatedAt
+                UpdatedAt = vm.UpdatedAt,
+                Files = vm.Files,
+                Image = vm.Image
+                    .Select(x => new FileToDatabaseDto
+                    {
+                        Id = x.ImageId,
+                        ImageData = x.ImageData,
+                        ImageTitle = x.ImageTitle,
+                        KindergardenId = x.KindergardenId
+                    })
             };
             var result = await _kindergardenServices.Update(dto);
+
+            var kindergardenId = result.Id;
 
             if (result == null)
             {
@@ -115,7 +142,7 @@ namespace TARge25Shop.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = kindergardenId });
         }
 
         [HttpGet]
@@ -128,16 +155,19 @@ namespace TARge25Shop.Controllers
                 return NotFound();
             }
 
-            var vm = new KindergardenDeleteViewModel
-            {
-                Id = kindergarden.Id,
-                GroupName = kindergarden.GroupName,
-                ChildrenCount = kindergarden.ChildrenCount,
-                KindergardenName = kindergarden.KindergardenName,
-                TeacherName = kindergarden.TeacherName,
-                CreatedAt = kindergarden.CreatedAt,
-                UpdatedAt = kindergarden.UpdatedAt
-            };
+            KindergardenImageViewModel[] images = await FileFromDatabase(id);
+
+            var vm = new KindergardenDeleteViewModel();
+        
+            vm.Id = kindergarden.Id;
+            vm.GroupName = kindergarden.GroupName;
+            vm.ChildrenCount = kindergarden.ChildrenCount;
+            vm.KindergardenName = kindergarden.KindergardenName;
+            vm.TeacherName = kindergarden.TeacherName;
+            vm.CreatedAt = kindergarden.CreatedAt;
+            vm.UpdatedAt = kindergarden.UpdatedAt;
+            vm.Image.AddRange(images);
+
             return View(vm);
         }
         [HttpPost]
@@ -161,18 +191,56 @@ namespace TARge25Shop.Controllers
                 return NotFound();
             }
 
+            KindergardenImageViewModel[] images = await FileFromDatabase(id);
+
             // Tuleb teha vaheinstants dbo ja vm vahel
-            var vm = new KindergardenDetailsViewModel
-            {
-                Id = kindergarden.Id,
-                GroupName = kindergarden.GroupName,
-                ChildrenCount = kindergarden.ChildrenCount,
-                KindergardenName = kindergarden.KindergardenName,
-                TeacherName = kindergarden.TeacherName,
-                CreatedAt = kindergarden.CreatedAt,
-                UpdatedAt = kindergarden.UpdatedAt
-            };
+            var vm = new KindergardenDetailsViewModel();
+            vm.Id = kindergarden.Id;
+            vm.GroupName = kindergarden.GroupName;
+            vm.ChildrenCount = kindergarden.ChildrenCount;
+            vm.KindergardenName = kindergarden.KindergardenName;
+            vm.TeacherName = kindergarden.TeacherName;
+            vm.CreatedAt = kindergarden.CreatedAt;
+            vm.UpdatedAt = kindergarden.UpdatedAt;
+            vm.Images.AddRange(images);
+            
             return View(vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RemoveImage(KindergardenImageViewModel vm)
+        {
+            var dto = new FileToDatabaseDto()
+            {
+                Id = vm.ImageId
+            };
+
+            var image = await _fileServices.RemoveImageFromDatabase(dto);
+
+            var realEstateId = image.KindergardenId;
+
+            if (image == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            //muuta see niimoodi, et pärast pildi kustutamist jääks kasutaja
+            //samale kinnisvara detailide lehele, mitte ei suunataks tagasi index lehele
+            //return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Update), new { id = realEstateId });
+        }
+
+        private async Task<KindergardenImageViewModel[]> FileFromDatabase(Guid id)
+        {
+            return await _context.FileToDatabases
+                .Where(x => x.KindergardenId == id)
+                .Select(y => new KindergardenImageViewModel
+                {
+                    ImageId = y.Id,
+                    ImageTitle = y.ImageTitle,
+                    ImageData = y.ImageData,
+                    KindergardenId = y.KindergardenId,
+                    Image = string.Format("data:image/gif;base64,{0}",
+                        Convert.ToBase64String(y.ImageData))
+                }).ToArrayAsync();
         }
     }
 }

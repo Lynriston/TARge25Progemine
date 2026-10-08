@@ -7,6 +7,8 @@
         public int ChildrenCount { get; set; }
         public string KindergardenName { get; set; } = string.Empty;
         public string TeacherName { get; set; } = string.Empty;
+        public List<KindergardenImageViewModel> Image { get; set; }
+            = new List<KindergardenImageViewModel>();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
