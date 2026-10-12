@@ -30,8 +30,9 @@ namespace TARge25Shop.ApplicationServices.Services
             spaceShip.ShipType = dto.ShipType;
             spaceShip.Crew = dto.Crew;
             spaceShip.EnginePower = dto.EnginePower;
-            spaceShip.CreatedAt = DateTime.Now;
-            spaceShip.UpdatedAt = DateTime.Now;
+            // Preserve any CreatedAt/UpdatedAt values provided by caller (tests may set these)
+            spaceShip.CreatedAt = dto.CreatedAt ?? DateTime.Now;
+            spaceShip.UpdatedAt = dto.UpdatedAt ?? DateTime.Now;
             //kui uus ankeet on loodud, siis
             //toimub ka faili salvestamine
             //saab kutsuda teise service classi meetotit
@@ -57,22 +58,26 @@ namespace TARge25Shop.ApplicationServices.Services
         //Teha update meethod, mis v]tab vastu dto ja uuendab olemasolevat kosmoselaeva
         public async Task<Spaceship> Update(SpaceshipDto dto)
         {
-            Spaceship spaceShip = new();
+            // Load existing entity so we preserve fields like CreatedAt when updating
+            var existing = await _context.Spaceships.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (existing == null)
+            {
+                return null;
+            }
 
-            spaceShip.Id = dto.Id;
-            spaceShip.Name = dto.Name;
-            spaceShip.ShipType = dto.ShipType;
-            spaceShip.Crew = dto.Crew;
-            spaceShip.EnginePower = dto.EnginePower;
-            spaceShip.CreatedAt = DateTime.Now;
-            spaceShip.UpdatedAt = DateTime.Now;
-
+            existing.Name = dto.Name;
+            existing.ShipType = dto.ShipType;
+            existing.Crew = dto.Crew;
+            existing.EnginePower = dto.EnginePower;
+            // preserve CreatedAt if not provided in dto
+            existing.CreatedAt = dto.CreatedAt ?? existing.CreatedAt;
+            existing.UpdatedAt = dto.UpdatedAt ?? DateTime.Now;
 
             //andmete salvestamine andmebaasi
-            _context.Spaceships.Update(spaceShip);
+            _context.Spaceships.Update(existing);
             await _context.SaveChangesAsync();
 
-            return spaceShip;
+            return existing;
         }
         public async Task<Spaceship> DetailAsync(Guid id)
         {
