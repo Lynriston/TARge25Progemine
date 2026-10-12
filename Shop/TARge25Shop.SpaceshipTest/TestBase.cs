@@ -25,38 +25,39 @@ namespace TARge25Shop.SpaceshipTest
             serviceProvider = services.BuildServiceProvider();
         }
         /// <summary>
-        /// Seame üles testide löbiviimiseks vajalikud teenused mujalt projektist
-        /// See meetod annab ka mölusoleva andmebaasi mida testideks kasutada,
+        /// Seame üles testide läbiviimiseks vajalikud teenused mujalt projektist
+        /// See meetod annab ka mälusoleva andmebaasi mida testideks kasutada, 
         /// toimib kui "program.cs"-i sisu testide jooksutamiseks, ent lühidal kujul.
         /// </summary>
-        /// <param name="services">tühi ServiceCollection tüübi muutuja kuhu asetame
-        /// teenused, sh ka andmebaasi</param>
-
-
+        /// <param name="services">tühi ServiceCollection-tüüpi muutuja kuhu asetame 
+        /// teenused, sh ka andmebaasi.</param>
         public virtual void SetupServices(ServiceCollection services)
         {
             services.AddScoped<ISpaceshipServices, SpaceshipServices>();
             services.AddScoped<IFileServices, FileServices>();
             services.AddScoped<IHostEnvironment, MockIHostEnvironment>();
 
-            services.AddDbContext<TARge25ShopContext>(x =>
-            {
-                x.UseInMemoryDatabase("TEST");
-                x.ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-            });
+            services.AddDbContext<TARge25ShopContext>(
+                x =>
+                {
+                    x.UseInMemoryDatabase("TEST");
+                    //vaigistame errorid (kui andmebaasi CRUD ei toimi, siis DB errorit ei anna)
+                    x.ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+                }
+                );
+
             RegisterMacros(services);
         }
 
-        public void Disposed()
+        public void Dispose()
         {
 
         }
 
-
         /// <summary>
         /// Leia üles kindel teenus, teenusepakkujalt.
-        /// serviceProvider omab teenuseid, GetService hangib, X tüüpi teenuse, 
-        /// C# on ükskõik mis tüüpi võimalik ilma tüübita tähe "T"-ga ehk "Template"
+        /// serviceProvider omab teenuseid, GetService hangib X tüüpi teenuse,
+        /// C# on ükskõik mis tüüpi võimalik ilma tüübita näidata tähe "T"-ga ehk "Template"
         /// </summary>
         /// <typeparam name="T">teenuse tüüp</typeparam>
         /// <returns></returns>
@@ -66,20 +67,21 @@ namespace TARge25Shop.SpaceshipTest
         }
 
         /// <summary>
-        /// Registreerib macrodest teenuseid kui need ei ole liidesed ja ei ole abstraktsed
-        /// On vaja setupide seadistamist
+        /// Registreerib macrodest teenuseid kui nad ei ole liidesed ja ei ole abstraktsed
+        /// On vaja testi setupide seadistuseks.
+        /// Makro --> Teenus
         /// </summary>
         /// <param name="services">Teenused, kuhu lisab makrodest muid teenuseid</param>
         private void RegisterMacros(ServiceCollection services)
         {
-            var macroBaseType = typeof(IMacros);
+            var macroBaseType = typeof(IMacros); //this is error, gud
 
             var macros = macroBaseType.Assembly.GetTypes()
                 .Where(t => macroBaseType.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
             foreach (var macro in macros)
             {
-                services.AddSingleton(macros);
+                services.AddSingleton(macro);
             }
         }
     }

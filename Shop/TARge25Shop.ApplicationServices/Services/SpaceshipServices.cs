@@ -11,18 +11,22 @@ namespace TARge25Shop.ApplicationServices.Services
         private readonly TARge25ShopContext _context;
         private readonly IFileServices _fileServices;
 
-        public SpaceshipServices(TARge25ShopContext context, IFileServices fileServices)
+        public SpaceshipServices
+            (
+                TARge25ShopContext context,
+                IFileServices fileServices
+            )
         {
             _context = context;
             _fileServices = fileServices;
         }
 
-        /*See meetod on vaja controlleris esile kutsuda
-         * peab lisama interface, et saaks kutsuda see meetod välja*/
+        //see meetod on vaja controlleris esile kutsuda
+        //peab lisama interface, et kutsuda see meetod välja
         public async Task<Spaceship> Create(SpaceshipDto dto)
         {
-            /*Siin tuleb teha vaheinstansi dto ja domain vahel,
-            *et andmed liiguvad dto-st domain objekti*/
+            //siin peab tegema vaheinstansi dto ja domain vahel,
+            //et andmed liiguvad dto-st domain objekt
             Spaceship spaceShip = new();
 
             spaceShip.Id = Guid.NewGuid();
@@ -30,12 +34,12 @@ namespace TARge25Shop.ApplicationServices.Services
             spaceShip.ShipType = dto.ShipType;
             spaceShip.Crew = dto.Crew;
             spaceShip.EnginePower = dto.EnginePower;
-            // Preserve any CreatedAt/UpdatedAt values provided by caller (tests may set these)
-            spaceShip.CreatedAt = dto.CreatedAt ?? DateTime.Now;
-            spaceShip.UpdatedAt = dto.UpdatedAt ?? DateTime.Now;
+            spaceShip.CreatedAt = DateTime.Now;
+            spaceShip.UpdatedAt = DateTime.Now;
             //kui uus ankeet on loodud, siis
             //toimub ka faili salvestamine
             //saab kutsuda teise service classi meetotit
+            //esile service classis
 
             if (spaceShip.Crew < 4)
             {
@@ -45,7 +49,7 @@ namespace TARge25Shop.ApplicationServices.Services
             _fileServices.FilesToApi(dto, spaceShip);
             if (spaceShip.EnginePower < 0)
             {
-                spaceShip.Crew = 4;
+                spaceShip.EnginePower = 1;
             }
 
             //andmete salvestamine andmebaasi
@@ -55,30 +59,36 @@ namespace TARge25Shop.ApplicationServices.Services
             return spaceShip;
         }
 
-        //Teha update meethod, mis v]tab vastu dto ja uuendab olemasolevat kosmoselaeva
+        //teha update meetod, mis võtab vastu dto ja uuendab olemasolevat kosmoselaeva
         public async Task<Spaceship> Update(SpaceshipDto dto)
         {
-            // Load existing entity so we preserve fields like CreatedAt when updating
-            var existing = await _context.Spaceships.FirstOrDefaultAsync(x => x.Id == dto.Id);
-            if (existing == null)
+            //siin peab tegema vaheinstansi dto ja domain vahel,
+            //et andmed liiguvad dto-st domain objekt
+            Spaceship spaceShip = new();
+
+            spaceShip.Id = dto.Id;
+            spaceShip.Name = dto.Name;
+            spaceShip.ShipType = dto.ShipType;
+            spaceShip.Crew = dto.Crew;
+            spaceShip.EnginePower = dto.EnginePower;
+            spaceShip.CreatedAt = (DateTime)dto.CreatedAt;
+            spaceShip.UpdatedAt = DateTime.Now;
+
+
+            var trackedEntry = _context.ChangeTracker.Entries<Spaceship>()
+                .FirstOrDefault(e => e.Entity.Id == dto.Id);
+
+            if (trackedEntry != null)
             {
-                return null;
+                trackedEntry.State = EntityState.Detached;
             }
-
-            existing.Name = dto.Name;
-            existing.ShipType = dto.ShipType;
-            existing.Crew = dto.Crew;
-            existing.EnginePower = dto.EnginePower;
-            // preserve CreatedAt if not provided in dto
-            existing.CreatedAt = dto.CreatedAt ?? existing.CreatedAt;
-            existing.UpdatedAt = dto.UpdatedAt ?? DateTime.Now;
-
-            //andmete salvestamine andmebaasi
-            _context.Spaceships.Update(existing);
+            //andmete uuendamine andmebaasis
+            _context.Spaceships.Update(spaceShip);
             await _context.SaveChangesAsync();
 
-            return existing;
+            return spaceShip;
         }
+
         public async Task<Spaceship> DetailAsync(Guid id)
         {
             var spaceship = await _context.Spaceships
@@ -86,6 +96,7 @@ namespace TARge25Shop.ApplicationServices.Services
 
             return spaceship;
         }
+
         public async Task<Spaceship> Delete(Guid id)
         {
             var result = await _context.Spaceships
