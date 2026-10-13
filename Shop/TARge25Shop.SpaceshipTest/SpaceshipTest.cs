@@ -10,7 +10,6 @@ namespace TARge25Shop.SpaceshipTest
 {
     public class SpaceshipTest : TestBase
     {
-
         [Fact]
         // Fact tähistab ära ühte testi xUnit raamistikus
         // 1 - Kirjeldatakse ära kas test on tavaline, või negatiivne.
