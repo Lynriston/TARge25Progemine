@@ -4,6 +4,7 @@ using TARge25Shop.Core.Dto;
 using TARge25Shop.Core.ServiceInterface;
 using TARge25Shop.Data;
 
+
 namespace TARge25Shop.ApplicationServices.Services
 {
     public class SpaceshipServices : ISpaceshipServices
@@ -74,14 +75,6 @@ namespace TARge25Shop.ApplicationServices.Services
             spaceShip.CreatedAt = (DateTime)dto.CreatedAt;
             spaceShip.UpdatedAt = DateTime.Now;
 
-
-            var trackedEntry = _context.ChangeTracker.Entries<Spaceship>()
-                .FirstOrDefault(e => e.Entity.Id == dto.Id);
-
-            if (trackedEntry != null)
-            {
-                trackedEntry.State = EntityState.Detached;
-            }
             //andmete uuendamine andmebaasis
             _context.Spaceships.Update(spaceShip);
             await _context.SaveChangesAsync();
@@ -104,13 +97,6 @@ namespace TARge25Shop.ApplicationServices.Services
 
             _context.Spaceships.Remove(result);
             await _context.SaveChangesAsync();
-
-            return result;
-        }
-        public async Task<Spaceship> Details(Guid id)
-        {
-            var result = await _context.Spaceships
-                .FirstOrDefaultAsync(x => x.Id == id);
 
             return result;
         }

@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -21,7 +22,7 @@ namespace TARge25Shop.SeleniumTesting
             createInIndex.Click();
 
             //sisestatavad andmed
-            InsertSpaceShipData(driver);
+            InsertSpaceShipData(driver, false);
 
             IWebElement cu_CreateSpaceship = driver.FindElement(By.Id("CU_CreateSpaceship"));
             cu_CreateSpaceship.Click();
@@ -55,12 +56,12 @@ namespace TARge25Shop.SeleniumTesting
             List<IWebElement> rows = table.FindElements(By.TagName("tr")).ToList();
             rows.RemoveAt(0);
             //tsükkel käib kõik read läbi
-            
+
             foreach (var row in rows)
             {
 
                 var locatedelement = row.FindElement(By.Id("IndexNameSpaceship"));
-                if (locatedelement.Text == "i add name for spaceship") 
+                if (locatedelement.Text == "i add name for spaceship")
                 {
                     //siis vajuta selles reas asuvat details nuppu
                     var rowelement = row.FindElement(By.Id("IndexActionsSpaceship"));
@@ -136,6 +137,43 @@ namespace TARge25Shop.SeleniumTesting
             Thread.Sleep(1000);
         }
 
+        [Fact]
+        public void Should_DeleteSpaceship_FromAppVIADeleteView()
+        {
+            //ülesseade
+            IWebDriver driver = SetupAndNavigateSIndex();
+
+            //otsime üles kõik tabeli read, rida htmli tabelis tähistatakse "tr"iga
+            //ICollection<IWebElement> table = driver.FindElements(By.TagName("tr"));
+            var table = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rows = table.FindElements(By.TagName("tr")).ToList();
+            rows.RemoveAt(0);
+            //tsükkel käib kõik read läbi
+
+            foreach (var row in rows)
+            {
+
+                var locatedelement = row.FindElement(By.Id("IndexNameSpaceship"));
+                if (locatedelement.Text == "DISISENJUNAEM")
+                {
+                    //siis vajuta selles reas asuvat details nuppu
+                    var rowelement = row.FindElement(By.Id("IndexActionsSpaceship"));
+                    var button = rowelement.FindElement(By.Id("IndexSpaceshipDelete"));
+                    button.Click();
+                    //pärast õiget vajutust, tsükkel katkestatakse
+                    //arvuti tudub
+                    Thread.Sleep(500);
+                    break;
+                }
+            }
+            var clickthisbutton = driver.FindElement(By.Id("Delete_Delete"));
+            clickthisbutton.Click();
+
+            int rowCount = table.FindElements(By.TagName("tr")).ToList().Count();
+            Assert.True(rowCount < 2);
+        }
+
+
         private static IWebDriver SetupAndNavigateSIndex()
         {
             //firefoxi käskiv ja juhtiv draiver
@@ -181,7 +219,7 @@ namespace TARge25Shop.SeleniumTesting
                 IWebElement cu_EnginePowerEntrySpaceship = driver.FindElement(By.Id("CU_EnginePowerEntrySpaceship"));
                 cu_EnginePowerEntrySpaceship.Clear();
                 cu_EnginePowerEntrySpaceship.SendKeys("666667");
-            };
+            }
         }
     }
 }

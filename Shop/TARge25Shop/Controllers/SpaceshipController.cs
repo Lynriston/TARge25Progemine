@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TARge25Shop.ApplicationServices.Services;
 using TARge25Shop.Core.Dto;
 using TARge25Shop.Core.ServiceInterface;
 using TARge25Shop.Data;
@@ -15,20 +14,20 @@ namespace TARge25Shop.Controllers
 
         public SpaceshipController
             (
-            ISpaceshipServices spaceshipServices, 
-            TARge25ShopContext context
+                ISpaceshipServices spaceshipServices,
+                TARge25ShopContext context
             )
         {
             _spaceshipServices = spaceshipServices;
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            //Kutsume teenuse välja, et saada kõik kosmoselaevad. See on 
-            //asünkroone tegevus ja kasutame await.
-            //constructoris tuleb välja kutsuda DbCondext, et 
-            //saaksime andmeid kätte. Seejärel kutsume teenuse välja.
+
+            // Kutsume teenuse välja, et saada kõik kosmoselaevad. 
+            //constructoris tuleb välja kutsuda DbContext, et
+            //saaksime andmeid kätte.
             var result = _context.Spaceships
                 .Select(x => new SpaceshipIndexViewModel
                 {
@@ -36,9 +35,8 @@ namespace TARge25Shop.Controllers
                     Name = x.Name,
                     ShipType = x.ShipType,
                     CreatedAt = x.CreatedAt,
-                    Crew = x.Crew,
+                    Crew = x.Crew
                 });
-
 
             return View(result);
         }
@@ -69,21 +67,22 @@ namespace TARge25Shop.Controllers
                         ExistingFilePath = x.FilePath,
                         SpaceshipId = x.SpaceshipId
                     }).ToArray()
-                
             };
 
-            /*Nüüd kutsume teenuse välja, et luua uus kosmoselaev
-            *asünkroone tegevus ja kasutame await.*/
+            //Nüüd kutsume teenuse välja, et luua uus kosmoselaev. See on
+            //asünkroonne tegevus ja kasutame await.
             var result = await _spaceshipServices.Create(dto);
 
             if (result == null)
             {
-                // Handle the case when the creation fails
+                // Kui kosmoselaeva loomine ebaõnnestus, siis võime kuvada veateate
+                // ja jätta kasutaja samale lehele.
                 return RedirectToAction(nameof(Index));
             }
 
             return RedirectToAction(nameof(Index));
         }
+
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
@@ -100,10 +99,14 @@ namespace TARge25Shop.Controllers
                 Name = spaceship.Name,
                 ShipType = spaceship.ShipType,
                 Crew = spaceship.Crew,
-                EnginePower = spaceship.EnginePower
+                EnginePower = spaceship.EnginePower,
+                CreatedAt = spaceship.CreatedAt,
+                UpdatedAt = spaceship.UpdatedAt
             };
+
             return View("CreateUpdate", vm);
         }
+
         [HttpPost]
         public async Task<IActionResult> Update(SpaceshipCreateUpdateViewModel vm)
         {
@@ -117,16 +120,17 @@ namespace TARge25Shop.Controllers
                 CreatedAt = vm.CreatedAt,
                 UpdatedAt = vm.UpdatedAt
             };
+
             var result = await _spaceshipServices.Update(dto);
 
             if (result == null)
             {
-                // Handle the case when the creation fails
                 return RedirectToAction(nameof(Index));
             }
 
             return RedirectToAction(nameof(Index));
         }
+
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -145,7 +149,7 @@ namespace TARge25Shop.Controllers
                     ImageId = y.Id
                 }).ToArrayAsync();
 
-            // Tuleb teha vaheinstants dbo ja vm vahel
+            //see on vaheinstants domaini ja vm vahel
             var vm = new SpaceshipDeleteViewModel();
 
             vm.Id = spaceship.Id;
@@ -156,6 +160,7 @@ namespace TARge25Shop.Controllers
             vm.CreatedAt = spaceship.CreatedAt;
             vm.UpdatedAt = spaceship.UpdatedAt;
             vm.Images.AddRange(images);
+
             return View(vm);
         }
 
@@ -173,10 +178,11 @@ namespace TARge25Shop.Controllers
         }
 
         [HttpGet]
-        //Teha Detaili vaate meetod
+        //teha Detaili vaate meetod
         public async Task<IActionResult> Details(Guid id)
         {
-            var spaceship = await _spaceshipServices.Details(id);
+            var spaceship = await _spaceshipServices.DetailAsync(id);
+
             if (spaceship == null)
             {
                 return NotFound();
@@ -190,10 +196,8 @@ namespace TARge25Shop.Controllers
                     ImageId = y.Id
                 }).ToArrayAsync();
 
-            //tuleb kasutada AddRange, et saada vm kaasa
-
-
-            // Tuleb teha vaheinstants dbo ja vm vahel
+            //tuleb kasutada AddRange, et saada pildid vm kaasa
+            //see on vaheinstants domaini ja vm vahel
             var vm = new SpaceshipDetailsViewModel();
 
             vm.Id = spaceship.Id;
@@ -204,7 +208,7 @@ namespace TARge25Shop.Controllers
             vm.CreatedAt = spaceship.CreatedAt;
             vm.UpdatedAt = spaceship.UpdatedAt;
             vm.Images.AddRange(images);
-            
+
             return View(vm);
         }
     }
