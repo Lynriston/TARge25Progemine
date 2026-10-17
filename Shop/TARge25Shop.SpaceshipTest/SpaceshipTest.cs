@@ -111,7 +111,7 @@ namespace TARge25Shop.SpaceshipTest
         [Fact]
         public async Task Should_UpdateSpaceshipByID_WhenUpdatingData()
         {
-            //ülesseade
+            // Arrange (ülesseade)
             SpaceshipDto dto = MockSpaceshipData();
             var result = await Svc<ISpaceshipServices>().Create(dto);
 
@@ -123,16 +123,18 @@ namespace TARge25Shop.SpaceshipTest
             domain.Name = "Igor Mang 2";
             domain.ShipType = "püramiid";
             domain.Crew = 420;
-            domain.CreatedAt = dto.CreatedAt;//  <-- ei tohi muutuda Update korral, tuleb võtta olemasolevast objektist.
-            domain.UpdatedAt = DateTime.UtcNow;//  <-- PEAB muutuma Update korral
+            domain.CreatedAt = dto.CreatedAt; // <-- ei tohi muutuda Update korral, tuleb võtta olemasolevast objektist.
+            domain.UpdatedAt = DateTime.UtcNow; // <-- PEAB muutuma Update korral
 
-            //tegevus
-            await Svc<ISpaceshipServices>().Update(domain);
-            //kill first connection: added tracker clearing to update
+            // Clear tracker so the context forgets the entity tracked during Create()
             Svc<TARge25ShopContext>().ChangeTracker.Clear();
+
+            // Act (tegevus)
+            await Svc<ISpaceshipServices>().Update(domain);
+
             var result2 = await Svc<ISpaceshipServices>().DetailAsync(guid);
 
-            //kontroll
+            // Assert (kontroll)
             Assert.Equal(result.Id, result2.Id);
             Assert.NotEqual(dto.EnginePower, result2.EnginePower);
             Assert.NotEqual(dto.Name, result2.Name);

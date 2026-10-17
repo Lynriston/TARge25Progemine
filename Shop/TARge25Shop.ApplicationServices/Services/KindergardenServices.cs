@@ -17,6 +17,11 @@ namespace TARge25Shop.ApplicationServices.Services
         }
         public async Task<Kindergarden> Create(KindergardenDto dto)
         {
+            if (dto == null || dto.ChildrenCount < 0 || dto.ChildrenCount <= 3)
+            {
+                return null; // Reject negative counts
+            }
+
             Kindergarden kinderGarden = new();
 
             kinderGarden.Id = Guid.NewGuid();
@@ -27,11 +32,6 @@ namespace TARge25Shop.ApplicationServices.Services
             kinderGarden.CreatedAt = DateTime.Now;
             kinderGarden.UpdatedAt = DateTime.Now;
 
-            if (dto.Files != null)
-            {
-                _fileServices.UploadFilesToDatabase(dto, kinderGarden);
-            }
-
             _context.Kindergardens.Add(kinderGarden);
             await _context.SaveChangesAsync();
 
@@ -39,24 +39,30 @@ namespace TARge25Shop.ApplicationServices.Services
         }
         public async Task<Kindergarden> Update(KindergardenDto dto)
         {
-            Kindergarden kinderGarden = new();
+            if (dto == null || dto.Id == null || dto.Id == Guid.Empty)
+            {
+                return null;
+            }
+            // 1. Fetch the existing entity from the database so it's tracked properly
+            var kinderGarden = await _context.Kindergardens
+                .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
-            kinderGarden.Id = dto.Id;
+            if (kinderGarden == null)
+            {
+                return null;
+            }
+
+            // 2. Update only the mutable fields
             kinderGarden.GroupName = dto.GroupName;
             kinderGarden.ChildrenCount = dto.ChildrenCount;
             kinderGarden.KindergardenName = dto.KindergardenName;
             kinderGarden.TeacherName = dto.TeacherName;
-            kinderGarden.CreatedAt = DateTime.Now;
-            kinderGarden.UpdatedAt = DateTime.Now;
 
-            if (dto.Files != null)
-            {
-                _fileServices.UploadFilesToDatabase(dto, kinderGarden);
-            }
+            // 3. Keep the original CreatedAt, but update UpdatedAt
+            kinderGarden.CreatedAt = dto.CreatedAt;
+            kinderGarden.UpdatedAt = DateTime.UtcNow;
 
-
-            //andmete salvestamine andmebaasi
-            _context.Kindergardens.Update(kinderGarden);
+            // 4. Save changes (No need for _context.Kindergardens.Update()!)
             await _context.SaveChangesAsync();
 
             return kinderGarden;
@@ -79,8 +85,6 @@ namespace TARge25Shop.ApplicationServices.Services
                 {
                     Id = y.Id,
                 }).ToArrayAsync();
-
-            await _fileServices.RemoveImagesFromDatabase(images);
 
             _context.Kindergardens.Remove(kindergarden);
             await _context.SaveChangesAsync();

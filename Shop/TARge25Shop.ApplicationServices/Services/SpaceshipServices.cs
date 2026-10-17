@@ -95,6 +95,11 @@ namespace TARge25Shop.ApplicationServices.Services
             var result = await _context.Spaceships
                 .FirstOrDefaultAsync(x => x.Id == id);
 
+            if (result == null)
+            {
+                return null; // or throw an exception, depending on how your service handles missing records
+            }
+
             _context.Spaceships.Remove(result);
             await _context.SaveChangesAsync();
 

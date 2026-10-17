@@ -3,6 +3,6 @@
   <Project Path="../TARge25Shop.Core/TARge25Shop.Core.csproj" Id="fd61ee86-42c9-44ec-891b-9b21431163e4" />
   <Project Path="../TARge25Shop.Data/TARge25Shop.Data.csproj" Id="bd561151-d789-4cda-bdee-327cd4d6807b" />
   <Project Path="../TARge25Shop.Selenium/TARge25Shop.Selenium.csproj" Id="b3be7b9a-fa85-4cc0-96aa-861a89e38e10" />
-  <Project Path="../TARge25Shop.SpaceshipTest/TARge25Shop.SpaceshipTest.csproj" Id="ea976c1f-53f3-4964-9452-ce1292d14bb8" />
+  <Project Path="../TARge25Shop.SpaceshipTest/TARge25Shop.Tests.csproj" Id="ea976c1f-53f3-4964-9452-ce1292d14bb8" />
   <Project Path="TARge25Shop.csproj" />
 </Solution>

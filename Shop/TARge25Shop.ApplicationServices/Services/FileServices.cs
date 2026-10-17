@@ -62,30 +62,5 @@ namespace TARge25Shop.ApplicationServices.Services
                 }
             }
         }
-
-        public Task<FileToApi?> RemoveImageFromApi(FileToApiDto dto)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<FileToDatabase> RemoveImageFromDatabase(FileToDatabaseDto dto)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<FileToApi?> RemoveImagesFromApi(FileToApiDto[] dtos)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<FileToDatabase> RemoveImagesFromDatabase(FileToDatabaseDto[] dtos)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UploadFilesToDatabase(KindergardenDto dto, Kindergarden domain)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
