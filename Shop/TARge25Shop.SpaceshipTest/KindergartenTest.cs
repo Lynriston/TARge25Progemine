@@ -8,6 +8,7 @@ using TARge25Shop.Data;
 using TARge25Shop.Data.Migrations;
 using TARge25Shop.SpaceshipTest;
 using Xunit;
+using Xunit.Sdk;
 
 namespace TARge25Shop.Tests
 {
@@ -187,13 +188,44 @@ namespace TARge25Shop.Tests
             var createdKindergaten1 = await Svc<IKindergardenServices>().Create(dto);
             var createdKindergarten2 = await Svc<IKindergardenServices>().Create(dto);
             var deleteResult = await Svc<IKindergardenServices>().Delete((Guid)createdKindergarten2.Id);
-            var spaceshipindb = await Svc<IKindergardenServices>().DetailAsync((Guid)createdKindergaten1.Id);
+            var kindergartenindb = await Svc<IKindergardenServices>().DetailAsync((Guid)createdKindergaten1.Id);
 
             //kontroll
-            Assert.NotNull(spaceshipindb);
+            Assert.NotNull(kindergartenindb);
             Assert.NotEqual(deleteResult.Id, createdKindergaten1.Id);
-            Assert.Equal(createdKindergaten1, spaceshipindb);
+            Assert.Equal(createdKindergaten1, kindergartenindb);
         }
+
+        //6.1 - xUnit Ühiktestimine
+
+        //1. Test: Maksimaalse laste arvu ületamine rühmas
+        [Fact]
+        public async Task ShouldNot_CreateKindergarten_WhenChildrenCountIsFull()
+        {
+            //ülesseade
+            KindergardenDto dto = MockKindergartenData();
+            dto.ChildrenCount = 11;
+            //tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            //kontroll
+            Assert.True(result.ChildrenCount > 10);
+        }
+
+        //2. Test: Dublikaad Id'ga kindergarten loomine
+        [Fact]
+        public async Task ShouldNot_CreateKindergartenById_WhenKindergartenIdExists()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            //tegevus
+            var createdKindergaten1 = await Svc<IKindergardenServices>().Create(dto);
+            var createdKindergarten2 = await Svc<IKindergardenServices>().Create(dto);
+            //kontroll
+            Assert.True(createdKindergaten1.Id != createdKindergarten2.Id);
+        }
+
+        //3. Test: 
+
         private KindergardenDto MockKindergartenNullData()
         {
             return new KindergardenDto
