@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Security.AccessControl;
 using System.Text;
 using TARge25Shop.Core.Dto;
@@ -198,7 +199,7 @@ namespace TARge25Shop.Tests
 
         //6.1 - xUnit Ühiktestimine
 
-        //1. Test: Maksimaalse laste arvu ületamine rühmas
+        //1. Test: Kui ChildCount on täis
         [Fact]
         public async Task ShouldNot_CreateKindergarten_WhenChildrenCountIsFull()
         {
@@ -211,7 +212,20 @@ namespace TARge25Shop.Tests
             Assert.True(result.ChildrenCount > 10);
         }
 
-        //2. Test: Dublikaad Id'ga kindergarten loomine
+        //2. Test: Kui ChildCount ei ole täis
+        [Fact]
+        public async Task Should_CreateKindergarten_WhenChildrenCountIsNotFull()
+        {
+            //ülesseade
+            KindergardenDto dto = MockKindergartenData();
+            dto.ChildrenCount = 5;
+            //tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            //kontroll
+            Assert.True(result.ChildrenCount < 10);
+        }
+
+        //3. Test: Kui KindergartenId on olemas
         [Fact]
         public async Task ShouldNot_CreateKindergartenById_WhenKindergartenIdExists()
         {
@@ -224,7 +238,201 @@ namespace TARge25Shop.Tests
             Assert.True(createdKindergaten1.Id != createdKindergarten2.Id);
         }
 
-        //3. Test: 
+        //4. Test: Kui ChildCount on üle 10 Kustuta
+        [Fact]
+        public async Task Should_DeleteKindergartenByChildCount_WhenChildCountIsOver10()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            dto.ChildrenCount = 12;
+            //Tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var resultDelete = await Svc<IKindergardenServices>().Delete((Guid)result.Id);
+            //kontroll
+            Assert.True(resultDelete.ChildrenCount > 10);
+        }
+
+        //5. Test: Kui ChildCount ei ole üle 10 kustuta
+        [Fact]
+        public async Task ShouldNot_DeleteKindergartenById_WhenChildCountIsUnder10()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            dto.ChildrenCount = 9;
+            //Tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var resultDelete = await Svc<IKindergardenServices>().Delete((Guid)result.Id);
+            //kontroll
+            Assert.True(resultDelete.ChildrenCount < 10);
+        }
+
+        //6. Test: Leia lasteaed kui ChildCount on üle 10
+        [Fact]
+        public async Task Should_GetKindergartenById_WhenChildCountIsOver10()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            dto.ChildrenCount = 20;
+            //Tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var getResult = await Svc<IKindergardenServices>().DetailAsync((Guid)result.Id);
+            //kontroll
+            Assert.NotNull(getResult);
+            Assert.True(getResult.ChildrenCount > 10);
+        }
+        //7. Test: Ei leia lasteaed kui ChildCount on üle 10
+        [Fact]
+        public async Task ShouldNot_GetKindergartenById_WhenChildCountIsOver10()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            dto.ChildrenCount = 20;
+            //Tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var getResult = await Svc<IKindergardenServices>().DetailAsync((Guid)result.Id);
+            //kontroll
+            Assert.NotNull(getResult);
+            Assert.False(getResult.ChildrenCount < 10);
+        }
+
+        //8. Test:Ei leia kui krupi nimi ei eksisteeri
+        [Fact]
+        public async Task ShouldNot_GetKindergartenById_WhenGroupNameDoesNotExists()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            dto.GroupName = "";
+            //tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var getResult = await Svc<IKindergardenServices>().DetailAsync((Guid)result.Id);
+            //kontroll
+            Assert.NotNull(result.GroupName);
+            Assert.False(getResult.GroupName != "");
+        }
+
+        //9. Test: Lei kui krupi nimi eksisteerib
+        [Fact]
+        public async Task Should_GetKindergartenById_WhenGroupNameExists()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            //tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var getResult = await Svc<IKindergardenServices>().DetailAsync((Guid)result.Id);
+            //kontroll
+            Assert.NotNull(result.GroupName);
+        }
+
+        //10. Test: Ei kustuta kui krupi nimi ei ole võrdne
+        [Fact]
+        public async Task ShouldNot_RemoveKindergartenById_WhenGroupNameNotEqual()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            dto.GroupName = "Class1";
+            //tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var deleteResult = await Svc<IKindergardenServices>().Delete((Guid)result.Id);
+            //kontroll
+            Assert.NotEmpty(result.GroupName);
+            Assert.Equal(deleteResult.GroupName, "Class1");
+            Assert.False(deleteResult.GroupName != "Class1");
+        }
+
+        //11. Test: ei uuenda kui lasteaed ei eksisteeri
+        [Fact]
+        public async Task ShouldNot_UpdateKindergartenById_WhenKindergartenDoesNotExist()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            dto.Id = Guid.NewGuid();
+
+            //tegevus
+            await Svc<IKindergardenServices>().Update(dto);
+            Svc<TARge25ShopContext>().ChangeTracker.Clear();
+            var result = await Svc<IKindergardenServices>().DetailAsync((Guid)dto.Id);
+
+            //kontroll
+            Assert.Null(result);
+        }
+
+        //12. Test: uuendab kui lasteaed eksisteerib
+        [Fact]
+        public async Task Should_UpdateKindergartenById_WhenKindergartenExists()
+        {
+            //ülesseade
+            KindergardenDto dto = MockKindergartenData();
+            var result = await Svc<IKindergardenServices>().Create(dto);
+
+            Guid guid = (Guid)result.Id;
+            KindergardenDto domain = new();
+
+            domain.Id = guid;
+            domain.GroupName = "NewName";
+            domain.ChildrenCount = 21;
+            domain.KindergardenName = "NewKindergaten";
+            domain.TeacherName = "NewTeacherName";
+            domain.CreatedAt = dto.CreatedAt;
+            domain.UpdatedAt = DateTime.UtcNow;
+
+            //tegevus
+            await Svc<IKindergardenServices>().Update(domain);
+            Svc<TARge25ShopContext>().ChangeTracker.Clear();
+            var result2 = await Svc<IKindergardenServices>().DetailAsync(guid);
+
+            //kontroll
+            Assert.NotNull(result);
+            Assert.Equal(result.Id, result2.Id);
+            Assert.NotEqual(dto.GroupName, result2.GroupName);
+            Assert.NotEqual(dto.ChildrenCount, result2.ChildrenCount);
+            Assert.NotEqual(dto.KindergardenName, result2.KindergardenName);
+            Assert.NotEqual(dto.TeacherName, result2.TeacherName);
+            Assert.Equal(dto.CreatedAt, result2.CreatedAt);
+            Assert.NotEqual(dto.UpdatedAt, result2.CreatedAt);
+        }
+
+        //13. Test: leiab kui lasteaed eksisteerib
+        [Fact]
+        public async Task Should_GetKindergartenById_WhenKindergartenNameExists()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            //tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var getResult = await Svc<IKindergardenServices>().DetailAsync((Guid)result.Id);
+            //kontroll
+            Assert.NotNull(result.KindergardenName);
+        }
+
+        //14. Test: ei leia kui lasteaia nimi ei eksisteeri
+        [Fact]
+        public async Task ShouldNot_GetKindergartenById_WhenKindergartenNameDoesNotExist()
+        {
+            //ülesseade
+            var dto = MockKindergartenData();
+            dto.KindergardenName = "";
+            //tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var getResult = await Svc<IKindergardenServices>().DetailAsync((Guid)result.Id);
+            //kontroll
+            Assert.NotNull(result.KindergardenName);
+            Assert.False(getResult.KindergardenName != "");
+        }
+
+        //15. Test: kustutab kui õpetaja nimi ei eksisteeri
+        [Fact]
+        public async Task Should_RemoveKindergartenNameById_WhenKindergartenTeacherNameExists()
+        {
+            //üleseade
+            var dto = MockKindergartenData();
+            dto.TeacherName = "Kelly";
+            //tegevus
+            var result = await Svc<IKindergardenServices>().Create(dto);
+            var getResult = await Svc<IKindergardenServices>().DetailAsync((Guid)result.Id);
+            //kontroll
+            Assert.NotNull(result.TeacherName);
+            Assert.Equal(result.TeacherName, "Kelly");
+        }
 
         private KindergardenDto MockKindergartenNullData()
         {
