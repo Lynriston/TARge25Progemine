@@ -8,7 +8,6 @@ namespace TARge25Shop.Core.ServiceInterface
 {
     public interface IChuckNorrisServices
     {
-        Task<ChuckNorris> Index();
-        Task<ChuckNorris> Joke();
+        Task<ChuckNorrisRootDto> ChuckNorrisResultHttpClient();
     }
 }

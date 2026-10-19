@@ -18,7 +18,7 @@ namespace TARge25Shop.Controllers
         {
             _chuckNorrisServices = chuckNorrisServices;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {            
             return View();
         }
@@ -34,9 +34,9 @@ namespace TARge25Shop.Controllers
         {
             var joke = await _chuckNorrisServices.ChuckNorrisResultHttpClient();
 
-            ChuckNorrisViewModell vm = new();
+            ChuckNorrisViewModel vm = new();
 
-            vm.Categories = joke.Catagories;
+            //vm.Categories = joke.Catagories;
             vm.CreatedAt = joke.CreatedAt;
             vm.IconUrl = joke.IconUrl;
             vm.Id = joke.Id;

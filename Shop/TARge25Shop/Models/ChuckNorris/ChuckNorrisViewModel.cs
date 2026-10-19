@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
-
-namespace TARge25Shop.Models.ChuckNorris
+﻿namespace TARge25Shop.Models.ChuckNorris
 {
-    public class ChuckNorrisViewModell
+    public class ChuckNorrisViewModel
     {
         public string Categories { get; set; } = string.Empty;
         public string CreatedAt { get; set; } = string.Empty;
