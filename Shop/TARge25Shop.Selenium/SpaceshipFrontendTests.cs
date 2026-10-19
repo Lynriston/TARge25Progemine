@@ -481,7 +481,7 @@ namespace TARge25Shop.SeleniumTest
             //firefoxi käskiv ja juhtiv draiver
             IWebDriver driver = new FirefoxDriver();
             //aadress millele draiver navigeerib
-            driver.Url = "https://localhost:7227/";
+            driver.Url = "https://localhost:7232/";
             //lehelt otsitav element
             IWebElement navigateToSpaceship = driver.FindElement(By.LinkText("Spaceship"));
             //selle elemendiga tehtav tegevus
@@ -519,7 +519,14 @@ namespace TARge25Shop.SeleniumTest
             {
                 IWebElement cu_NameEntrySpaceship = driver.FindElement(By.Id("CU_NameEntrySpaceship"));
                 cu_NameEntrySpaceship.Clear();
-                cu_NameEntrySpaceship.SendKeys("i add name for spaceship");
+                if (name != null)
+                {
+                    cu_NameEntrySpaceship.SendKeys(name);
+                }
+                else
+                {
+                    cu_NameEntrySpaceship.SendKeys("i add name for spaceship");
+                }
                 IWebElement cu_ShipTypeEntrySpaceship = driver.FindElement(By.Id("CU_ShipTypeEntrySpaceship"));
                 cu_ShipTypeEntrySpaceship.Clear();
                 cu_ShipTypeEntrySpaceship.SendKeys("i add ship type for spaceship");

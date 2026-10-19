@@ -67,15 +67,6 @@ namespace TARge25Shop.Controllers
                 ChildrenCount = vm.ChildrenCount,
                 KindergardenName = vm.KindergardenName,
                 TeacherName = vm.TeacherName,
-                Files = vm.Files,
-                Image = vm.Image
-                    .Select(x => new FileToDatabaseDto
-                    {
-                        Id = x.ImageId,
-                        ImageData = x.ImageData,
-                        ImageTitle = x.ImageTitle,
-                        KindergardenId = x.KindergardenId
-                    })
             };
 
             var result = await _kindergardenServices.Create(dto);
@@ -97,7 +88,7 @@ namespace TARge25Shop.Controllers
                 return NotFound();
             }
 
-            KindergardenImageViewModel[] images = await FileFromDatabase(id);
+
 
             var vm = new KindergardenCreateUpdateViewModel();
 
@@ -106,7 +97,6 @@ namespace TARge25Shop.Controllers
             vm.ChildrenCount = kindergarden.ChildrenCount;
             vm.KindergardenName = kindergarden.KindergardenName;
             vm.TeacherName = kindergarden.TeacherName;
-            vm.Image.AddRange(images);
 
             return View("CreateUpdate", vm);
         }
@@ -122,15 +112,6 @@ namespace TARge25Shop.Controllers
                 TeacherName = vm.TeacherName,
                 CreatedAt = vm.CreatedAt,
                 UpdatedAt = vm.UpdatedAt,
-                Files = vm.Files,
-                Image = vm.Image
-                    .Select(x => new FileToDatabaseDto
-                    {
-                        Id = x.ImageId,
-                        ImageData = x.ImageData,
-                        ImageTitle = x.ImageTitle,
-                        KindergardenId = x.KindergardenId
-                    })
             };
             var result = await _kindergardenServices.Update(dto);
 
@@ -155,7 +136,6 @@ namespace TARge25Shop.Controllers
                 return NotFound();
             }
 
-            KindergardenImageViewModel[] images = await FileFromDatabase(id);
 
             var vm = new KindergardenDeleteViewModel();
         
@@ -166,7 +146,6 @@ namespace TARge25Shop.Controllers
             vm.TeacherName = kindergarden.TeacherName;
             vm.CreatedAt = kindergarden.CreatedAt;
             vm.UpdatedAt = kindergarden.UpdatedAt;
-            vm.Image.AddRange(images);
 
             return View(vm);
         }
@@ -191,8 +170,6 @@ namespace TARge25Shop.Controllers
                 return NotFound();
             }
 
-            KindergardenImageViewModel[] images = await FileFromDatabase(id);
-
             // Tuleb teha vaheinstants dbo ja vm vahel
             var vm = new KindergardenDetailsViewModel();
             vm.Id = kindergarden.Id;
@@ -202,45 +179,8 @@ namespace TARge25Shop.Controllers
             vm.TeacherName = kindergarden.TeacherName;
             vm.CreatedAt = kindergarden.CreatedAt;
             vm.UpdatedAt = kindergarden.UpdatedAt;
-            vm.Images.AddRange(images);
             
             return View(vm);
-        }
-        [HttpPost]
-        public async Task<IActionResult> RemoveImage(KindergardenImageViewModel vm)
-        {
-            var dto = new FileToDatabaseDto()
-            {
-                Id = vm.ImageId
-            };
-
-            var image = await _fileServices.RemoveImageFromDatabase(dto);
-
-            var realEstateId = image.KindergardenId;
-
-            if (image == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            //muuta see niimoodi, et pärast pildi kustutamist jääks kasutaja
-            //samale kinnisvara detailide lehele, mitte ei suunataks tagasi index lehele
-            //return RedirectToAction(nameof(Index));
-            return RedirectToAction(nameof(Update), new { id = realEstateId });
-        }
-
-        private async Task<KindergardenImageViewModel[]> FileFromDatabase(Guid id)
-        {
-            return await _context.FileToDatabases
-                .Where(x => x.KindergardenId == id)
-                .Select(y => new KindergardenImageViewModel
-                {
-                    ImageId = y.Id,
-                    ImageTitle = y.ImageTitle,
-                    ImageData = y.ImageData,
-                    KindergardenId = y.KindergardenId,
-                    Image = string.Format("data:image/gif;base64,{0}",
-                        Convert.ToBase64String(y.ImageData))
-                }).ToArrayAsync();
         }
     }
 }
