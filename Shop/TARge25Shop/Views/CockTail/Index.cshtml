@@ -1,15 +1,20 @@
-﻿<div class="container">
-    <form method="get">
+﻿@model TARge25Shop.Models.CockTail.SearchCockTailViewModel
+
+<h1>Search Cocktail</h1>
+
+<div class="container">
+    <form method="post">
         <div class="container">
             <div class="form-group col-md-offset-3 col-md-5">
-                <h2>Search Cocktails</h2>
+                <h2>Find your favorite cocktail</h2>
+                <label asp-for="SearchCocktail" style="font-family: Arial"></label>
+                <input asp-for="SearchCocktail" class="form-control" />
+                <span asp-validation-for="SearchCocktail" class="text-danger"></span>
             </div>
         </div>
         <div class="container">
             <div class="form-group col-md-offset-3 col-md-5">
-                <h2>Find your favorite cocktail</h2>
-
-                <button asp-controller="cockTail" asp-action="CockTail" class="btn btn-primary">Search</button>
+                <button asp-controller="cocktail" asp-action="searchCocktails" class="btn btn-primary">Search</button>
             </div>
         </div>
     </form>

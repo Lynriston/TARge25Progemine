@@ -7,6 +7,6 @@ namespace TARge25Shop.Core.ServiceInterface
 {
     public interface ICockTailServices
     {
-        Task<CockTailRootDto> CockTailResultHttpClient();
+        Task<CockTailRootDto> GetCocktails(CockTailResultDto dto);
     }
 }
