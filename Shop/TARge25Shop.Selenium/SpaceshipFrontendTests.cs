@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace TARge25Shop.SeleniumTest
+namespace TARge25Shop.Selenium
 {
     //järjesti klass, mis omab omadusi mille järgi teste saab järjestada
     public class OrderAttribute : Attribute
@@ -51,10 +52,10 @@ namespace TARge25Shop.SeleniumTest
     }
     //enne testi klassi kirjeldatakse ära mille järgi testid sorteeritakse
     //tunnuse "TestCaseOrderer"i järgi. Sulgude vahel esimene väärtus on klassi asukoht ise, teine väärtus on nimeruum kus klass asub.
-    [TestCaseOrderer("TARge25Shop.SeleniumTest.PriorityOrderer", "TARge25Shop.SeleniumTest")]
+    [TestCaseOrderer("TARge25Shop.Selenium.PriorityOrderer", "TARge25Shop.Selenium")]
     public class SpaceshipFrontendTests
     {
-        public static string thisRunGuid { get; set; }
+        public static string? thisRunGuid { get; set; }
         //[Fact]
         //[Order(1)] //järjesti millel on väärtus "1", järjestatakse väiksem enne.
         //public void Should_NavigateToCreate_AddSpaceShip_WithCorrectData_ReturnToIndex()
@@ -226,6 +227,7 @@ namespace TARge25Shop.SeleniumTest
                 var locatedelement = row.FindElement(By.Id("IndexNameSpaceship"));
                 if (locatedelement.Text == thisRunGuid)
                 {
+                    isObjectFound = true;
                     //siis vajuta selles reas asuvat details nuppu
                     var rowelement = row.FindElement(By.Id("IndexActionsSpaceship"));
                     var button = rowelement.FindElement(By.Id("IndexSpaceshipDetails"));
@@ -470,6 +472,7 @@ namespace TARge25Shop.SeleniumTest
                     isDeleted = true;
                 }
             }
+            driver.Quit();
 
             Assert.True(isDeleted);
             Assert.False(!isDeleted);
