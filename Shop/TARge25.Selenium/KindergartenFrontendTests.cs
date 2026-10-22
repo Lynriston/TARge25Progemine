@@ -72,7 +72,6 @@ namespace TARge25.Selenium
             string kinderGartenChildrenCountData = "";
             string kinderGartenKindergartenNameData = "";
             string kinderGartenTeacherNameData = "";
-            string kinderGartenBuiltAtData = "";
 
             bool doesItExist = false;
             foreach (var row in rowsOfTable)
@@ -91,13 +90,66 @@ namespace TARge25.Selenium
 
             Assert.True(true == doesItExist);
             Assert.Equal(kinderGartenGroupNameData, thisRunGuid);
-            Assert.Equal(kinderGartenChildrenCountData, "666");
+            Assert.Equal("666", kinderGartenChildrenCountData);
             Assert.True(kinderGartenKindergartenNameData == "KindergertenName to Kindergarten");
             Assert.True((thisRunGuid == kinderGartenGroupNameData)
                 && ("KindergertenName to Kindergarten" == kinderGartenKindergartenNameData)
                 && ("666" == kinderGartenChildrenCountData));
         }
 
+        [Fact]
+        [Order(2)]
+        public void Should_NavigateToDetails_OfThisKindergarten_WithPreviouslyCorrectData()
+        {
+            IWebDriver driver = SetupAndNavigateKIndex();
+
+            var table = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rows = table.FindElements(By.TagName("tr")).ToList();
+            rows.RemoveAt(0);
+            bool isObjectFound = false;
+
+            foreach (var row in rows)
+            {
+                var locatedElement = row.FindElement(By.Id("IndexGroupNameKindergarten"));
+                if (locatedElement.Text == thisRunGuid)
+                {
+                    isObjectFound = true;
+                    var rowelement = row.FindElement(By.Id("IndexActionKindergarten"));
+                    var button = rowelement.FindElement(By.Id("IndexActionKindergartenDetails"));
+                    button.Click();
+
+                    //Thread.Sleep(500);
+                    break;
+                }
+            }
+            IWebElement details_KindergartenId = driver.FindElement(By.Id("Details_KindergartenId"));
+            var details_id = details_KindergartenId.Text;
+
+            IWebElement details_KindergartenGroupName = driver.FindElement(By.Id("Details_KindergartenGroupName"));
+            var details_groupName = details_KindergartenGroupName.Text;
+
+            IWebElement details_KindergartenChildrenCount = driver.FindElement(By.Id("Details_KindergartenChildrenCount"));
+            var details_childrenCount = details_KindergartenChildrenCount.Text;
+
+            IWebElement details_KindergartenName = driver.FindElement(By.Id("Details_KindergartenName"));
+            var details_kindergartenName = details_KindergartenName.Text;
+
+            IWebElement details_KindergartenTeacherName = driver.FindElement(By.Id("Details_KindergartenTeacherName"));
+            var details_teacherName = details_KindergartenTeacherName.Text;
+
+            driver.Quit();
+
+            Assert.True(isObjectFound);
+            Assert.NotNull(details_id);
+            Assert.NotEmpty(details_groupName);
+            Assert.NotNull(details_childrenCount);
+            Assert.True(!string.IsNullOrEmpty(details_childrenCount));
+            Assert.Equal(thisRunGuid, details_groupName);
+            Assert.Equal("KindergertenName to Kindergarten", details_kindergartenName);
+            Assert.Equal("666", details_childrenCount);
+            Assert.Equal("TeacherName to Kindergarten", details_teacherName);
+            Assert.True(int.Parse(details_childrenCount).GetType() == typeof(int));
+        }
         
     
     private static IWebDriver SetupAndNavigateKIndex()
