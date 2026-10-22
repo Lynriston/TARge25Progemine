@@ -27,10 +27,10 @@ namespace TARge25Shop.ApplicationServices.Services
             kinderGarden.CreatedAt = DateTime.Now;
             kinderGarden.UpdatedAt = DateTime.Now;
 
-            if (dto.Files != null)
-            {
-                _fileServices.UploadFilesToDatabase(dto, kinderGarden);
-            }
+            //if (dto.Files != null)
+            //{
+            //    _fileServices.UploadFilesToDatabase(dto, kinderGarden);
+            //}
 
             _context.Kindergardens.Add(kinderGarden);
             await _context.SaveChangesAsync();
@@ -49,10 +49,10 @@ namespace TARge25Shop.ApplicationServices.Services
             kinderGarden.CreatedAt = DateTime.Now;
             kinderGarden.UpdatedAt = DateTime.Now;
 
-            if (dto.Files != null)
-            {
-                _fileServices.UploadFilesToDatabase(dto, kinderGarden);
-            }
+            //if (dto.Files != null)
+            //{
+            //    _fileServices.UploadFilesToDatabase(dto, kinderGarden);
+            //}
 
 
             //andmete salvestamine andmebaasi
@@ -73,14 +73,14 @@ namespace TARge25Shop.ApplicationServices.Services
             var kindergarden = await _context.Kindergardens
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            var images = await _context.FileToDatabases
-                .Where(x => x.KindergardenId == id)
-                .Select(y => new FileToDatabaseDto
-                {
-                    Id = y.Id,
-                }).ToArrayAsync();
+            //var images = await _context.FileToDatabases
+            //    .Where(x => x.KindergardenId == id)
+            //    .Select(y => new FileToDatabaseDto
+            //    {
+            //        Id = y.Id,
+            //    }).ToArrayAsync();
 
-            await _fileServices.RemoveImagesFromDatabase(images);
+            //await _fileServices.RemoveImagesFromDatabase(images);
 
             _context.Kindergardens.Remove(kindergarden);
             await _context.SaveChangesAsync();
