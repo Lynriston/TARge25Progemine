@@ -115,7 +115,7 @@ namespace TARge25.Selenium
                 {
                     isObjectFound = true;
                     var rowelement = row.FindElement(By.Id("IndexActionKindergarten"));
-                    var button = rowelement.FindElement(By.Id("IndexActionKindergartenDetails"));
+                    var button = rowelement.FindElement(By.Id("IndexKindergartenDetails"));
                     button.Click();
 
                     //Thread.Sleep(500);
@@ -150,9 +150,70 @@ namespace TARge25.Selenium
             Assert.Equal("TeacherName to Kindergarten", details_teacherName);
             Assert.True(int.Parse(details_childrenCount).GetType() == typeof(int));
         }
-        
-    
-    private static IWebDriver SetupAndNavigateKIndex()
+
+        [Fact]
+        [Order(3)]
+        public void Should_UpdateDetails_OfThisKindergarten_WithNewData()
+        {
+            IWebDriver driver = SetupAndNavigateKIndex();
+
+            var table = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rows = table.FindElements(By.TagName("tr")).ToList();
+            rows.RemoveAt(0);
+            bool doesItExist = false;
+
+            foreach (var row in rows)
+            {
+                var locatedElement = row.FindElement(By.Id("IndexGroupNameKindergarten"));
+                if (locatedElement.Text == thisRunGuid)
+                {
+                    doesItExist = true;
+                    var rowElement = row.FindElement(By.Id("IndexActionKindergarten"));
+                    var button = rowElement.FindElement(By.Id("IndexKindergartenUpdate"));
+                    button.Click();
+                    //Thread.Sleep(500);
+                    break;
+                }
+            }
+            InsertKinderGartenData(driver, thisRunGuid, true);
+
+            IWebElement cu_CreateKindergarten = driver.FindElement(By.Id("CU_UpdateKindergarten"));
+            cu_CreateKindergarten.Click();
+
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            var tableOfIndex = wait.Until(d => d.FindElement(By.Id("IndexTable")));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            string kinderGartenGroupNameData = "";
+            string kinderGartenChildrenCountData = "";
+            string kinderGartenKindergartenNameData = "";
+            string kinderGartenTeacherNameData = "";
+            doesItExist = false;
+            foreach (var row in rowsOfTable)
+            {
+                if (row.FindElement(By.Id("IndexGroupNameKindergarten")).Text == thisRunGuid)
+                {
+                    doesItExist = true;
+                    kinderGartenGroupNameData = thisRunGuid;
+                    kinderGartenChildrenCountData = row.FindElement(By.Id("IndexChildrenCountKindergarten")).Text;
+                    kinderGartenKindergartenNameData = row.FindElement(By.Id("IndexKindergartenNameKindergarten")).Text;
+                    kinderGartenTeacherNameData = row.FindElement(By.Id("IndexTeacherNameKindergarten")).Text;
+                    break;
+                }
+            }
+            driver.Quit();
+
+            Assert.True(doesItExist);
+            Assert.NotNull(kinderGartenGroupNameData);
+            Assert.Equal(thisRunGuid, kinderGartenGroupNameData);
+            Assert.False(string.IsNullOrEmpty(kinderGartenKindergartenNameData));
+            Assert.NotEqual("Adde TeacherName to Kindergarten", kinderGartenTeacherNameData);
+            Assert.True(kinderGartenTeacherNameData == "TeacherName");
+            Assert.False(string.IsNullOrEmpty(kinderGartenKindergartenNameData));
+        }
+
+
+        private static IWebDriver SetupAndNavigateKIndex()
         {
             IWebDriver driver = new FirefoxDriver();
             driver.Url = "https://localhost:7232/";

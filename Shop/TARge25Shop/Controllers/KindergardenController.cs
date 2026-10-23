@@ -142,7 +142,7 @@ namespace TARge25Shop.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Details), new { id = kindergardenId });
+            return RedirectToAction(nameof(Index), new { id = kindergardenId });
         }
 
         [HttpGet]

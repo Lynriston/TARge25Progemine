@@ -35,13 +35,13 @@
                     <td id="IndexTeacherNameKindergarten">@kindergarden.TeacherName</td>
                     <td id="IndexActionKindergarten">
                         <span id="IndexKindergartenId" hidden>@kindergarden.Id</span>
-                        <a id="IndexActionKindergartenDetails" asp-action="details" asp-controller="kindergarden" asp-route-id="@kindergarden.Id" class="btn btn-primary">Details</a>
-                        <a id="IndexActionKindergartenUpdate" asp-action="update" asp-controller="kindergarden" asp-route-id="@kindergarden.Id" class="btn btn-primary">Update</a>
-                        <a id="IndexActionKindergartenDelete" asp-action="delete" asp-controller="kindergarden" asp-route-id="@kindergarden.Id" class="btn btn-outline-danger">Delete</a>
+                        <a id="IndexKindergartenDetails" asp-action="details" asp-controller="kindergarden" asp-route-id="@kindergarden.Id" class="btn btn-primary">Details</a>
+                        <a id="IndexKindergartenUpdate" asp-action="update" asp-controller="kindergarden" asp-route-id="@kindergarden.Id" class="btn btn-primary">Update</a>
+                        <a id="IndexKindergartenDelete" asp-action="delete" asp-controller="kindergarden" asp-route-id="@kindergarden.Id" class="btn btn-outline-danger">Delete</a>
                     </td>
                 </tr>
                 rowNumber += 1;
             }
         </tbody>
-    </tabl>
+    </table>
 </form>
