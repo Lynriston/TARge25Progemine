@@ -212,6 +212,54 @@ namespace TARge25.Selenium
             Assert.False(string.IsNullOrEmpty(kinderGartenKindergartenNameData));
         }
 
+        [Fact]
+        [Order(4)]
+        public void Should_DeleteThisKindergarten_FromDbByDeleteView()
+        {
+            IWebDriver driver = SetupAndNavigateKIndex();
+
+            var table = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rows = table.FindElements(By.TagName("tr")).ToList();
+            rows.RemoveAt(0);
+            bool doesItExist = false;
+
+            foreach (var row in rows)
+            {
+                var locatedElement = row.FindElement(By.Id("IndexGroupNameKindergarten"));
+                if (locatedElement.Text == thisRunGuid)
+                {
+                    doesItExist = true;
+                    var rowElement = row.FindElement(By.Id("IndexActionKindergarten"));
+                    var button = rowElement.FindElement(By.Id("IndexKindergartenDelete"));
+                    button.Click();
+                    //Thread.Sleep(500);
+                    break;
+                }
+            }
+            var clickBtn = driver.FindElement(By.Id("delete_confirm"));
+            clickBtn.Click();
+            bool isDeleted = false;
+            table = driver.FindElement(By.Id("IndexTable"));
+            rows = table.FindElements(By.TagName("tr")).ToList();
+            rows.RemoveAt(0);
+            foreach (var row in rows)
+            {
+                var elementName = row.FindElement(By.Id("IndexGroupNameKindergarten")).Text;
+                if (elementName == thisRunGuid)
+                {
+                    isDeleted = false;
+                    break;
+                }
+                else
+                {
+                    isDeleted = true;
+                }
+            }
+            driver.Quit();
+
+            Assert.True(isDeleted);
+            Assert.False(!isDeleted);
+        }
 
         private static IWebDriver SetupAndNavigateKIndex()
         {
