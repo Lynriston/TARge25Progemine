@@ -25,6 +25,7 @@ namespace TARge25Shop
             builder.Services.AddScoped<IRealestateServices, RealestateServices>();
             builder.Services.AddHttpClient<IChuckNorrisServices, ChuckNorrisServices>();
             builder.Services.AddHttpClient<ICockTailServices, CockTailServices>();
+            builder.Services.AddHttpClient<IOpenWeatherServices, OpenWeatherServices>();
 
             var app = builder.Build();
 

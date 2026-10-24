@@ -1,0 +1,52 @@
+﻿@model TARge25Shop.Models.OpenWeather.OpenWeatherViewModel
+
+<div class="container">
+    <h2>Weather Details</h2>
+    @if (Model != null && Model.name != null)
+    {
+        <h2>@Model.name (@Model.sys?.country)</h2>
+    }
+    <hr />
+    <dl class="row text-dark">
+        @if (Model?.main != null)
+        {
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Temperature:</label>
+                <div class="col-sm-10">@Model.main.temp C</div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Feels Like:</label>
+                <div class="col-sm-10">@Model.main.feels_like C</div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Humidity:</label>
+                <div class="col-sm-10">@Model.main.humidity %</div>
+            </div>
+        }
+
+        @if (Model?.wind != null)
+        {
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Wind Speed:</label>
+                <div class="col-sm-10">@Model.wind.speed m/s</div>
+            </div>
+        }
+
+        @if (Model?.weather != null && Model.weather.Count > 0)
+        {
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Condition:</label>
+                <div class="col-sm-10">@Model.weather[0].description</div>
+            </div>
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.weather)
+        }
+    </dl>
+</div>
+<div class="container mt-3">
+    <form method="get">
+        <button asp-controller="OpenWeather" asp-action="Index" class="btn btn-primary">Back To Index</button>
+    </form>
+</div>
