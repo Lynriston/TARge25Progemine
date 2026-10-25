@@ -6,35 +6,41 @@
     <dl class="row">
         <div class="form-group row">
             <label asp-for="Id" class="col-sm-2 col-form-label"></label>
-            @Html.DisplayFor(model => model.Id)
+            <span id="Details_REId">@Html.DisplayFor(model => model.Id)</span>       
+        </div>
+    </dl>
+    <dl class="row">
+        <div class="form-group row">
+            <label asp-for="Name" class="col-sm-2 col-form-label"></label>
+            <span id="Details_REName">@Html.DisplayFor(model => model.Name)</span>
         </div>
     </dl>
 
     <dl class="row">
         <div class="form-group row">
             <label asp-for="Area" class="col-sm-2 col-form-label"></label>
-            @Html.DisplayFor(model => model.Area)
+            <span id="Details_REArea">@Html.DisplayFor(model => model.Area)</span>            
         </div>
     </dl>
 
     <dl class="row">
         <div class="form-group row">
             <label asp-for="Location" class="col-sm-2 col-form-label"></label>
-            @Html.DisplayFor(model => model.Location)
+            <span id="Details_RELocation">@Html.DisplayFor(model => model.Location)</span>
         </div>
     </dl>
 
     <dl class="row">
         <div class="form-group row">
             <label asp-for="RoomNumber" class="col-sm-2 col-form-label"></label>
-            @Html.DisplayFor(model => model.RoomNumber)
+            <span id="Details_RERoomNr">@Html.DisplayFor(model => model.RoomNumber)</span>           
         </div>
     </dl>
 
     <dl class="row">
         <div class="form-group row">
             <label asp-for="BuildingType" class="col-sm-2 col-form-label"></label>
-            @Html.DisplayFor(model => model.BuildingType)
+            <span id="Details_REBuildType">@Html.DisplayFor(model => model.BuildingType)</span>
         </div>
     </dl>
 

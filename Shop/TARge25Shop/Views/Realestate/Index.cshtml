@@ -34,7 +34,7 @@
                     <td id="IndexRoomNumberRealEstate">@realestate.RoomNumber</td>
                     <td id="IndexBuildingTypeRealEstate">@realestate.BuildingType</td>
                     <td>@realestate.CreatedAt</td>
-                    <td>
+                    <td id="IndexActionRealEstate">
                         <a id="IndexRealEstateDetails" asp-action="details" asp-controller="realestate" asp-route-id="@realestate.Id" class="btn btn-primary">Details</a>
                         <a id="IndexRealEstateCreate" asp-action="update" asp-controller="realestate" asp-route-id="@realestate.Id" class="btn btn-primary">Update</a>
                         <a id="IndexRealEstateDelete" asp-action="delete" asp-controller="realestate" asp-route-id="@realestate.Id" class="btn btn-outline-danger">Delete</a>

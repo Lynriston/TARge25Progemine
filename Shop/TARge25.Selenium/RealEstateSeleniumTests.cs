@@ -68,7 +68,62 @@ namespace TARge25.Selenium
             Assert.True("House" == realEstateBuildingTypeData);
         }
 
+        [Fact]
+        [Order(6)]
+        public void Should_NavigateToDetails_OfThisRealEstate_WithPreviouslyCorrectData()
+        {
+            IWebDriver driver = SetupAndNavigateRIndex();
 
+            var table = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rows = table.FindElements(By.TagName("tr")).ToList();
+            rows.RemoveAt(0);
+            bool isObjectFound = false;
+
+            foreach (var row in rows)
+            {
+                var locatedElement = row.FindElement(By.Id("IndexNameRealEstate"));
+                if (locatedElement.Text == thisRunGuid)
+                {
+                    isObjectFound = true;
+                    var rowelement = row.FindElement(By.Id("IndexActionRealEstate"));
+                    var button = rowelement.FindElement(By.Id("IndexRealEstateDetails"));
+                    button.Click();
+
+                    //Thread.Sleep(500);
+                    break;
+                }
+            }
+            IWebElement details_RealEstateId = driver.FindElement(By.Id("Details_REId"));
+            var details_id = details_RealEstateId.Text;
+
+            IWebElement details_RealEstateName = driver.FindElement(By.Id("Details_REName"));
+            var details_Name = details_RealEstateName.Text;
+
+            IWebElement details_RealEstateArea = driver.FindElement(By.Id("Details_REArea"));
+            var details_Area = details_RealEstateArea.Text;
+
+            IWebElement details_RealEstateLocation = driver.FindElement(By.Id("Details_RELocation"));
+            var details_Location = details_RealEstateLocation.Text;
+
+            IWebElement details_RealEstateRoomNumber = driver.FindElement(By.Id("Details_RERoomNr"));
+            var details_roomNr = details_RealEstateRoomNumber.Text;
+            
+            IWebElement details_RealEstateBuildingType = driver.FindElement(By.Id("Details_REBuildType"));
+            var details_buildingType = details_RealEstateBuildingType.Text;
+
+            driver.Quit();
+
+            Assert.True(isObjectFound);
+            Assert.NotNull(details_id);
+            Assert.NotEmpty(details_Name);
+            Assert.NotNull(details_roomNr);
+            Assert.True(!string.IsNullOrEmpty(details_roomNr));
+            Assert.Equal(thisRunGuid, details_Name);
+            Assert.Equal("13", details_Area);
+            Assert.Equal("22", details_roomNr);
+            Assert.Equal("House", details_buildingType);
+            Assert.True(int.Parse(details_roomNr).GetType() == typeof(int));
+        }
 
         private static IWebDriver SetupAndNavigateRIndex()
         {
