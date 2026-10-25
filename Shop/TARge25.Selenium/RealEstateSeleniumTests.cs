@@ -187,6 +187,55 @@ namespace TARge25.Selenium
             Assert.True(realEstateRoomNumberData == "13");
         }
 
+        [Fact]
+        [Order(8)]
+        public void Should_DeleteThisRealEstate_FromDbByDeleteView()
+        {
+            IWebDriver driver = SetupAndNavigateRIndex();
+
+            var table = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rows = table.FindElements(By.TagName("tr")).ToList();
+            rows.RemoveAt(0);
+            bool doesItExist = false;
+
+            foreach (var row in rows)
+            {
+                var locatedElement = row.FindElement(By.Id("IndexNameRealEstate"));
+                if (locatedElement.Text == thisRunGuid)
+                {
+                    doesItExist = true;
+                    var rowElement = row.FindElement(By.Id("IndexActionRealEstate"));
+                    var button = rowElement.FindElement(By.Id("IndexRealEstateDelete"));
+                    button.Click();
+                    //Thread.Sleep(500);
+                    break;
+                }
+            }
+            var clickBtn = driver.FindElement(By.Id("delete_confirm"));
+            clickBtn.Click();
+            bool isDeleted = false;
+            table = driver.FindElement(By.Id("IndexTable"));
+            rows = table.FindElements(By.TagName("tr")).ToList();
+            rows.RemoveAt(0);
+            foreach (var row in rows)
+            {
+                var elementName = row.FindElement(By.Id("IndexNameRealEstate")).Text;
+                if (elementName == thisRunGuid)
+                {
+                    isDeleted = false;
+                    break;
+                }
+                else
+                {
+                    isDeleted = true;
+                }
+            }
+            driver.Quit();
+
+            Assert.True(isDeleted);
+            Assert.False(!isDeleted);
+        }
+
         private static IWebDriver SetupAndNavigateRIndex()
         {
             //firefoxi käskiv ja juhtiv draiver
