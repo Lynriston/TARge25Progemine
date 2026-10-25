@@ -142,7 +142,7 @@ namespace TARge25Shop.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Details), new { id = realEstateId });
+            return RedirectToAction(nameof(Index), new { id = realEstateId });
         }
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)

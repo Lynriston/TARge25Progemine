@@ -125,6 +125,68 @@ namespace TARge25.Selenium
             Assert.True(int.Parse(details_roomNr).GetType() == typeof(int));
         }
 
+        [Fact]
+        [Order(7)]
+        public void Should_UpdateDetails_OfThisRealEstate_WithNewData()
+        {
+            IWebDriver driver = SetupAndNavigateRIndex();
+
+            var table = driver.FindElement(By.Id("IndexTable"));
+            List<IWebElement> rows = table.FindElements(By.TagName("tr")).ToList();
+            rows.RemoveAt(0);
+            bool doesItExist = false;
+
+            foreach (var row in rows)
+            {
+                var locatedElement = row.FindElement(By.Id("IndexNameRealEstate"));
+                if (locatedElement.Text == thisRunGuid)
+                {
+                    doesItExist = true;
+                    var rowElement = row.FindElement(By.Id("IndexActionRealEstate"));
+                    var button = rowElement.FindElement(By.Id("IndexRealEstateUpdate"));
+                    button.Click();
+                    //Thread.Sleep(500);
+                    break;
+                }
+            }
+            InsertRealEstateData(driver, thisRunGuid, true);
+
+            IWebElement cu_CreatRealEstate = driver.FindElement(By.Id("CU_UpdateRealEstate"));
+            cu_CreatRealEstate.Click();
+
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            var tableOfIndex = wait.Until(d => d.FindElement(By.Id("IndexTable")));
+            List<IWebElement> rowsOfTable = tableOfIndex.FindElements(By.TagName("tr")).ToList();
+            rowsOfTable.RemoveAt(0);
+            string realEstateNameData = "";
+            string realEstateAreaData = "";
+            string realEstateLocationData = "";
+            string realEstateRoomNumberData = "";
+            string realEstateBuildingTypeData = "";
+            doesItExist = false;
+            foreach (var row in rowsOfTable)
+            {
+                if (row.FindElement(By.Id("IndexNameRealEstate")).Text == thisRunGuid)
+                {
+                    doesItExist = true;
+                    realEstateNameData = thisRunGuid;
+                    realEstateAreaData = row.FindElement(By.Id("IndexAreaRealEstate")).Text;
+                    realEstateLocationData = row.FindElement(By.Id("IndexLocationRealEstate")).Text;
+                    realEstateRoomNumberData = row.FindElement(By.Id("IndexRoomNumberRealEstate")).Text;
+                    realEstateBuildingTypeData = row.FindElement(By.Id("IndexBuildingTypeRealEstate")).Text;
+                    break;
+                }
+            }
+            driver.Quit();
+
+            Assert.True(doesItExist);
+            Assert.NotNull(realEstateNameData);
+            Assert.Equal(thisRunGuid, realEstateNameData);
+            Assert.False(string.IsNullOrEmpty(realEstateAreaData));
+            Assert.NotEqual("Current Location", realEstateLocationData);
+            Assert.True(realEstateRoomNumberData == "13");
+        }
+
         private static IWebDriver SetupAndNavigateRIndex()
         {
             //firefoxi käskiv ja juhtiv draiver
@@ -144,16 +206,19 @@ namespace TARge25.Selenium
 
             if (isOneOrTwo)
             {
-                IWebElement cu_AreaEntryRealEstate = driver.FindElement(By.Id("CU_AreaEntryRealEstate"));
-                cu_AreaEntryRealEstate.Clear();
+                IWebElement cu_NameEntryRealEstate = driver.FindElement(By.Id("CU_NameEntryRealEstate"));
+                cu_NameEntryRealEstate.Clear();
                 if (name != null)
                 {
-                    cu_AreaEntryRealEstate.SendKeys(name);
+                    cu_NameEntryRealEstate.SendKeys(name);
                 }
                 else
                 {
-                    cu_AreaEntryRealEstate.SendKeys("314");
+                    cu_NameEntryRealEstate.SendKeys("Name for Real Estate");
                 }
+                IWebElement cu_AreaEntryRealEstate = driver.FindElement(By.Id("CU_AreaEntryRealEstate"));
+                cu_AreaEntryRealEstate.Clear();
+                cu_AreaEntryRealEstate.SendKeys("314");
                 IWebElement cu_LocationEntryRealEstate = driver.FindElement(By.Id("CU_LocationEntryRealEstate"));
                 cu_LocationEntryRealEstate.Clear();
                 cu_LocationEntryRealEstate.SendKeys("Random Location");
@@ -166,16 +231,19 @@ namespace TARge25.Selenium
             }
             else
             {
-                IWebElement cu_AreaEntryRealEstate = driver.FindElement(By.Id("CU_AreaEntryRealEstate"));
-                cu_AreaEntryRealEstate.Clear();
+                IWebElement cu_NameEntryRealEstate = driver.FindElement(By.Id("CU_NameEntryRealEstate"));
+                cu_NameEntryRealEstate.Clear();
                 if (name != null)
                 {
-                    cu_AreaEntryRealEstate.SendKeys(name);
+                    cu_NameEntryRealEstate.SendKeys(name);
                 }
                 else
                 {
-                    cu_AreaEntryRealEstate.SendKeys("13");
+                    cu_NameEntryRealEstate.SendKeys("Another Name for Real Estate");
                 }
+                IWebElement cu_AreaEntryRealEstate = driver.FindElement(By.Id("CU_AreaEntryRealEstate"));
+                cu_AreaEntryRealEstate.Clear();
+                cu_AreaEntryRealEstate.SendKeys("13");
                 IWebElement cu_LocationEntryRealEstate = driver.FindElement(By.Id("CU_LocationEntryRealEstate"));
                 cu_LocationEntryRealEstate.Clear();
                 cu_LocationEntryRealEstate.SendKeys("Current Location");
