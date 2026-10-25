@@ -47,7 +47,7 @@ namespace TARge25.Selenium
     public class KindergartenFrontendTests
     {
         public static string? thisRunGuid { get; set; }
-
+        //Navigeerib loomis lehele ning loob kindergarteni kus asuvad õiged andmed
         [Fact]
         [Order(1)]
         public void Should_NavigateToCreate_AddUniqueKindergarten_WithCorrectData_ReturnToIndex()
@@ -96,7 +96,7 @@ namespace TARge25.Selenium
                 && ("KindergertenName to Kindergarten" == kinderGartenKindergartenNameData)
                 && ("666" == kinderGartenChildrenCountData));
         }
-
+        //Navigeerib eelmises testis loodud kindergarteni detail vaatesse
         [Fact]
         [Order(2)]
         public void Should_NavigateToDetails_OfThisKindergarten_WithPreviouslyCorrectData()
@@ -150,7 +150,7 @@ namespace TARge25.Selenium
             Assert.Equal("TeacherName to Kindergarten", details_teacherName);
             Assert.True(int.Parse(details_childrenCount).GetType() == typeof(int));
         }
-
+        //Navigeerib esimeses testis loodud kindergarteni Uuendamis vaatesse ning uuendab andmed
         [Fact]
         [Order(3)]
         public void Should_UpdateDetails_OfThisKindergarten_WithNewData()
@@ -211,7 +211,7 @@ namespace TARge25.Selenium
             Assert.True(kinderGartenTeacherNameData == "TeacherName");
             Assert.False(string.IsNullOrEmpty(kinderGartenKindergartenNameData));
         }
-
+        //Eemaldab esimeses testis loodud kindergarteni
         [Fact]
         [Order(4)]
         public void Should_DeleteThisKindergarten_FromDbByDeleteView()

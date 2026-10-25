@@ -17,7 +17,7 @@ namespace TARge25.Selenium
     {
         public static string? thisRunGuid { get; set; }
 
-        //Loob Uue Real Estate ning kontrollib kas andmed on õiged
+        //Navigeerib loomis lehele ning loob real estate'i kus asuvad õiged andmed
         [Fact]
         [Order(5)]
         public void Should_NavigateToCreate_AddNewRealEstate_WithCorrectData_ReturnToIndex()
@@ -67,7 +67,7 @@ namespace TARge25.Selenium
             Assert.True("Current Location" == realEstateLocationData);
             Assert.True("House" == realEstateBuildingTypeData);
         }
-
+        //Navigeerib eelmises testis loodud real estate'i detail vaatesse
         [Fact]
         [Order(6)]
         public void Should_NavigateToDetails_OfThisRealEstate_WithPreviouslyCorrectData()
@@ -125,6 +125,7 @@ namespace TARge25.Selenium
             Assert.True(int.Parse(details_roomNr).GetType() == typeof(int));
         }
 
+        //Navigeerib esimeses testis loodud real estate'i Uuendamis vaatesse ning uuendab andmed
         [Fact]
         [Order(7)]
         public void Should_UpdateDetails_OfThisRealEstate_WithNewData()
@@ -187,6 +188,7 @@ namespace TARge25.Selenium
             Assert.True(realEstateRoomNumberData == "13");
         }
 
+        //Eemaldab esimeses testis loodud real estate'i
         [Fact]
         [Order(8)]
         public void Should_DeleteThisRealEstate_FromDbByDeleteView()
