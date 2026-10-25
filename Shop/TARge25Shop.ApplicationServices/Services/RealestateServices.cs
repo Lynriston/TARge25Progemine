@@ -23,6 +23,7 @@ namespace TARge25Shop.ApplicationServices.Services
             RealEstate realEstate = new();
 
             realEstate.Id = Guid.NewGuid();
+            realEstate.Name = dto.Name;
             realEstate.Area = dto.Area;
             realEstate.Location = dto.Location;
             realEstate.RoomNumber = dto.RoomNumber;
@@ -46,6 +47,7 @@ namespace TARge25Shop.ApplicationServices.Services
             RealEstate realEstate = new();
 
             realEstate.Id = dto.Id;
+            realEstate.Name = dto.Name;
             realEstate.Area = dto.Area;
             realEstate.Location = dto.Location;
             realEstate.RoomNumber = dto.RoomNumber;

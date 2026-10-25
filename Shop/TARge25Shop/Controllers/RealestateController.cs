@@ -35,6 +35,7 @@ namespace TARge25Shop.Controllers
                 .Select(x => new RealestateIndexViewModel
                 {
                     Id = x.Id,
+                    Name = x.Name,
                     Area = x.Area,
                     Location = x.Location,
                     RoomNumber = x.RoomNumber,
@@ -57,6 +58,7 @@ namespace TARge25Shop.Controllers
         {
             var dto = new RealestateDto
             {
+                Name = vm.Name,
                 Area = vm.Area,
                 Location = vm.Location,
                 RoomNumber = vm.RoomNumber,
@@ -97,6 +99,7 @@ namespace TARge25Shop.Controllers
             var vm = new RealestateCreateUpdateViewModel();
 
             vm.Id = realestate.Id;
+            vm.Name = realestate.Name;
             vm.Area = realestate.Area;
             vm.Location = realestate.Location;
             vm.BuildingType = realestate.BuildingType;
@@ -113,6 +116,7 @@ namespace TARge25Shop.Controllers
             var dto = new RealestateDto()
             {
                 Id = vm.Id,
+                Name = vm.Name,
                 Area = vm.Area,
                 Location = vm.Location,
                 RoomNumber = vm.RoomNumber,
@@ -155,6 +159,7 @@ namespace TARge25Shop.Controllers
             var vm = new RealestateDeleteViewModel();
 
             vm.Id = realestate.Id;
+            vm.Name = realestate.Name;
             vm.Area = realestate.Area;
             vm.Location = realestate.Location;
             vm.BuildingType = realestate.BuildingType;
@@ -192,6 +197,7 @@ namespace TARge25Shop.Controllers
             var vm = new RealEstateDetailsViewModel();
 
             vm.Id = realestate.Id;
+            vm.Name = realestate.Name;
             vm.Area = realestate.Area;
             vm.Location = realestate.Location;
             vm.RoomNumber = realestate.RoomNumber;

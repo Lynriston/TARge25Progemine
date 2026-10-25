@@ -97,8 +97,8 @@ namespace TARge25Shop.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double?>("Area")
-                        .HasColumnType("float");
+                    b.Property<int?>("Area")
+                        .HasColumnType("int");
 
                     b.Property<string>("BuildingType")
                         .HasColumnType("nvarchar(max)");
@@ -111,6 +111,9 @@ namespace TARge25Shop.Data.Migrations
 
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RoomNumber")
                         .HasColumnType("int");
