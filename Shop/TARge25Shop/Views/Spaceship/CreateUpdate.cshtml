@@ -20,35 +20,35 @@ else
 
     <div class="form-group row">
         <label asp-for="Name" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
+        <div class="col-sm-10 p-2">
             <input asp-for="Name" class="form-control" />
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="ShipType" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
+        <div class="col-sm-10 p-2">
             <input asp-for="ShipType" class="form-control" />
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="Crew" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
+        <div class="col-sm-10 p-2">
             <input asp-for="Crew" class="form-control" />
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="EnginePower" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
+        <div class="col-sm-10 p-2">
             <input asp-for="EnginePower" class="form-control" />
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="Files" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-5">
+        <div class="col-sm-5 p-2">
             <div class="custom-file">
                 <input class="form-control" asp-for="Files" multiple type="file" />
             </div>
@@ -63,11 +63,11 @@ else
 
     @if (Model.Id.HasValue)
     {
-        <input asp-action="update" asp-controller="spaceship" type="submit" class="btn btn-success" value="Update" />
+        <input asp-action="update" asp-controller="spaceship" type="submit" class="btn btn-outline-success" value="Update" />
     }
     else
     {
-        <input asp-action="create" asp-controller="spaceship" type="submit" class="btn btn-success" value="Create" />
+        <input asp-action="create" asp-controller="spaceship" type="submit" class="btn btn-outline-success" value="Create" />
     }
 
     <a asp-action="Index" asp-controller="spaceship" class="btn btn-secondary">Back to List</a>

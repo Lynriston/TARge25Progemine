@@ -11,15 +11,15 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TARge25Shop</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light" style="height: 100px">
+            <div class="container text-capitalize">
+                <div class="navbar-collapse collapse d-sm-inline-flex text-truncate border border-success p-2 border-opacity-10 rounded-pill">                   
+                    <ul class="navbar-nav flex-grow-1 justify-content-center nav-underline">
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TARge25Shop</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
@@ -38,6 +38,7 @@
                         <li class="nav-item"> 
                             <a class="nav-link text-dark" asp-area="" asp-controller="CockTail" asp-action="Index">Cocktail</a>
                         </li>
+
                     </ul>
                 </div>
             </div>
