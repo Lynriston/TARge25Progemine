@@ -17,6 +17,8 @@ namespace TARge25Shop
             builder.Services.AddDbContext<TARge25ShopContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -25,6 +27,7 @@ namespace TARge25Shop
             builder.Services.AddScoped<IRealestateServices, RealestateServices>();
             builder.Services.AddHttpClient<IChuckNorrisServices, ChuckNorrisServices>();
             builder.Services.AddHttpClient<ICockTailServices, CockTailServices>();
+            //builder.Services.AddScoped<IEmailServices, EmailServices>();
 
             var app = builder.Build();
 
