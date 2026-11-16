@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using TARge25Shop.ApplicationServices.Services;
+using TARge25Shop.Core.Domain;
 using TARge25Shop.Core.ServiceInterface;
 using TARge25Shop.Data;
 
@@ -17,7 +19,9 @@ namespace TARge25Shop
             builder.Services.AddDbContext<TARge25ShopContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<TARge25ShopContext>()
+                .AddDefaultTokenProviders();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

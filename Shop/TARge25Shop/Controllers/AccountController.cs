@@ -94,5 +94,31 @@ namespace TARge25Shop.Controllers
             }
             return View(vm);
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            //Otsib ülesse kasutajaid läbi Id
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"The User with Id of {userId} is not valid";
+                return View("NotFound");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            List<string> errordatas =
+                [
+                "Area", "Account",
+                "Issue", "Success",
+                "StatusMessage", "Registration Success",
+                "ActedOn", $"{user.Email}",
+                "CreatedAccountData", $"{user.Email}\n{user.City}\n[password hidden]\n[password hidden]"
+                ];
+        }
     }
 }
