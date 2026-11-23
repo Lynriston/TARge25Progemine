@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using System.Diagnostics;
 using TARge25Shop.Core.Domain;
 using TARge25Shop.Core.Dto;
@@ -18,8 +19,8 @@ namespace TARge25Shop.Controllers
 
         public AccountController
             (
-            UserManager<ApplicationUser> userManager, 
-            SignInManager<ApplicationUser> signInManager, 
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             IEmailServices emailServices
             )
         {
@@ -140,7 +141,7 @@ namespace TARge25Shop.Controllers
             ViewBag.ErrorTitles = "Email cannot be confirmed";
             ViewBag.ErrorMessage = $"The user email, with userid of {userId}, cannot be confirmed";
 
-            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
 
@@ -209,7 +210,7 @@ namespace TARge25Shop.Controllers
                     //muutuja token tuleb uus token genereerida
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     //muutuja passwordResetLink viib Resetpassword vaatele
-                    var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token}, Request.Scheme);
+                    var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
 
                     var emailDto = new EmailDto
                     {
@@ -248,7 +249,31 @@ namespace TARge25Shop.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
 
+                if (user != null)
+                {
+                    //tulemuses kasutate ResetPasswordAsync ja see annab kaasa user, token ja salasõna
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    //kui õnnestub, siis returnib vaadet resetPasswordConfirmation
+                    if (result.Succeeded)
+                    {
+                        if (await _userManager.IsLockedOutAsync(user))
+                        {
+                            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+                        }
+
+                        return View("ResetPasswordConfirmation");
+                    }
+
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
             return View(model);
         }
     }

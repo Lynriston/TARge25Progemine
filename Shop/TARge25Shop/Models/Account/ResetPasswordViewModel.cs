@@ -5,7 +5,7 @@ namespace TARge25Shop.Models.Account
     public class ResetPasswordViewModel
     {
         [EmailAddress]
-        string Email { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
         [Required]
         [DataType(DataType.Password)]
