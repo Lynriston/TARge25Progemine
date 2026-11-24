@@ -1,3 +1,5 @@
+using Google.Apis.Auth.AspNetCore3;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -47,6 +49,18 @@ namespace TARge25Shop
             builder.Services.AddHttpClient<IChuckNorrisServices, ChuckNorrisServices>();
             builder.Services.AddHttpClient<ICockTailServices, CockTailServices>();
             builder.Services.AddScoped<IEmailServices, EmailServices>();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleOpenIdConnectDefaults.AuthenticationScheme;
+            })
+                .AddCookie()
+                .AddGoogleOpenIdConnect(googleOptions =>
+            {
+                googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            });
 
             var app = builder.Build();
 
